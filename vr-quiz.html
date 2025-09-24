@@ -4,67 +4,47 @@
     <meta charset="utf-8">
     <title>VR Data Types Quiz</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-animation-component@5.0.0/dist/aframe-animation-component.min.js"></script>
     <style>body { margin: 0; overflow: hidden; }</style>
   </head>
   <body>
     <a-scene>
-      <!-- Assets for sounds -->
+      <!-- Assets for sound -->
       <a-assets>
-        <audio id="correctSound" src="https://cdn.jsdelivr.net/gh/yourusername/sounds/correct.mp3"></audio>
-        <audio id="wrongSound" src="https://cdn.jsdelivr.net/gh/yourusername/sounds/wrong.mp3"></audio>
+        <!-- Free sounds hosted online -->
+        <audio id="correctSound" src="https://cdn.jsdelivr.net/gh/aframevr/assets/click.mp3"></audio>
+        <audio id="wrongSound" src="https://cdn.jsdelivr.net/gh/aframevr/assets/error.mp3"></audio>
       </a-assets>
 
-      <!-- Camera + cursor -->
+      <!-- Camera + fuse cursor -->
       <a-entity camera look-controls>
-        <a-entity cursor="fuse: true; fuseTimeout: 2000"
+        <a-entity cursor="fuse: true; fuseTimeout: 1500"
                   position="0 0 -1"
                   geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
                   material="color: cyan; shader: flat">
         </a-entity>
       </a-entity>
 
-      <!-- Forest background -->
-      <a-sky src="https://cdn.pixabay.com/photo/2016/10/14/22/14/forest-1744319_1280.jpg" rotation="0 -90 0"></a-sky>
+      <!-- 360 Forest Background -->
+      <a-sky src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg"></a-sky>
 
-      <!-- Moving animals (simple spheres representing animals) -->
-      <a-sphere position="-3 1 -5" radius="0.2" color="#FF5722" animation="property: position; to:3 1 -5; dir: alternate; dur:8000; loop:true"></a-sphere>
-      <a-sphere position="3 1.5 -4" radius="0.25" color="#4CAF50" animation="property: position; to:-3 1.5 -4; dir: alternate; dur:10000; loop:true"></a-sphere>
-
-      <!-- Question -->
-      <a-entity id="question" position="0 2 -4" text="value: ; align: center; width: 4; color: #000;"></a-entity>
+      <!-- Question text -->
+      <a-entity id="question" position="0 2 -4" text="value: ; align: center; width: 4; color: #FFF;"></a-entity>
 
       <!-- Options -->
-      <a-box id="option1" position="-1 1 -3" depth="0.3" height="0.6" width="1" color="#FFC107"
-             event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
-             event-set__leave="_event: mouseleave; scale: 1 1 1"
-             gaze-listener>
+      <a-box id="option1" position="-1 1 -3" depth="0.3" height="0.6" width="1" color="#FFC107" gaze-listener>
+        <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
+      </a-box>
+      <a-box id="option2" position="1 1 -3" depth="0.3" height="0.6" width="1" color="#8BC34A" gaze-listener>
+        <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
+      </a-box>
+      <a-box id="option3" position="-1 -0.5 -3" depth="0.3" height="0.6" width="1" color="#03A9F4" gaze-listener>
+        <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
+      </a-box>
+      <a-box id="option4" position="1 -0.5 -3" depth="0.3" height="0.6" width="1" color="#E91E63" gaze-listener>
         <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
       </a-box>
 
-      <a-box id="option2" position="1 1 -3" depth="0.3" height="0.6" width="1" color="#8BC34A"
-             event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
-             event-set__leave="_event: mouseleave; scale: 1 1 1"
-             gaze-listener>
-        <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
-      </a-box>
-
-      <a-box id="option3" position="-1 -0.5 -3" depth="0.3" height="0.6" width="1" color="#03A9F4"
-             event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
-             event-set__leave="_event: mouseleave; scale: 1 1 1"
-             gaze-listener>
-        <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
-      </a-box>
-
-      <a-box id="option4" position="1 -0.5 -3" depth="0.3" height="0.6" width="1" color="#E91E63"
-             event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
-             event-set__leave="_event: mouseleave; scale: 1 1 1"
-             gaze-listener>
-        <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
-      </a-box>
-
-      <!-- Score display -->
+      <!-- Score -->
       <a-entity id="score" position="0 3 -4" text="value: Score: 0; align: center; color: #FFF;"></a-entity>
 
       <!-- Replay button -->
@@ -74,47 +54,46 @@
       </a-box>
 
       <script>
-        // Quiz data
+        // Quiz Data
         const quiz = [
-          {q:"Which data type is 25?", options:["Text","Number ✅","Color","Sound"], answer:1},
-          {q:"Which data type is 'Blue'?", options:["Text","Number","Color ✅","Video"], answer:2},
-          {q:"Which data type is 'Hello'?", options:["Text ✅","Number","Sound","Date"], answer:0},
-          {q:"Which data type is 02:30 PM?", options:["Date","Time ✅","Number","Text"], answer:1},
-          {q:"Which data type is 12/09/2025?", options:["Date ✅","Color","Sound","Text"], answer:0},
-          {q:"Which data type is a YouTube clip?", options:["Text","Video ✅","Number","Color"], answer:1},
-          {q:"Which data type is music playing?", options:["Number","Sound ✅","Text","Date"], answer:1}
+          {q:"Which data type is 25?", options:["Text","Number","Color","Sound"], answer:1},
+          {q:"Which data type is 'Blue'?", options:["Text","Number","Color","Video"], answer:2},
+          {q:"Which data type is 'Hello'?", options:["Text","Number","Sound","Date"], answer:0},
+          {q:"Which data type is 02:30 PM?", options:["Date","Time","Number","Text"], answer:1},
+          {q:"Which data type is 12/09/2025?", options:["Date","Color","Sound","Text"], answer:0},
+          {q:"Which data type is a YouTube clip?", options:["Text","Video","Number","Color"], answer:1},
+          {q:"Which data type is music playing?", options:["Number","Sound","Text","Date"], answer:1}
         ];
 
         let current = 0;
         let score = 0;
-
         const boxes = ["option1","option2","option3","option4"];
 
+        // Load a question
         function loadQuestion(index){
           const q = quiz[index];
           document.querySelector("#question").setAttribute("text","value",q.q);
           boxes.forEach((id,i)=>{
             document.querySelector(`#${id} a-text`).setAttribute("value", q.options[i]);
             document.querySelector(`#${id}`).setAttribute("color",["#FFC107","#8BC34A","#03A9F4","#E91E63"][i]);
+            document.querySelector(`#${id}`).setAttribute("visible", "true");
           });
         }
 
-        // Gaze-based selection
+        // Gaze-listener for options
         AFRAME.registerComponent('gaze-listener',{
           init: function(){
-            this.el.addEventListener('click',()=>{
+            this.el.addEventListener('click', ()=>{
               const idx = boxes.indexOf(this.el.id);
               if(idx === quiz[current].answer){
                 score += 10;
-                document.querySelector('#correctSound').components.sound.playSound?.();
+                document.querySelector('#correctSound').components.sound.playSound();
                 this.el.setAttribute("color","#4CAF50");
               } else {
-                document.querySelector('#wrongSound').components.sound.playSound?.();
+                document.querySelector('#wrongSound').components.sound.playSound();
                 this.el.setAttribute("color","#F44336");
               }
-
               document.querySelector('#score').setAttribute("text","value",`Score: ${score}`);
-
               setTimeout(()=>{
                 current++;
                 if(current < quiz.length){
@@ -129,23 +108,20 @@
           }
         });
 
-        // Replay button
+        // Gaze-listener for replay
         AFRAME.registerComponent('gaze-listener-replay',{
           init: function(){
-            this.el.addEventListener('click',()=>{
+            this.el.addEventListener('click', ()=>{
               score = 0;
               current = 0;
               document.querySelector('#score').setAttribute("text","value","Score: 0");
-              boxes.forEach(b=>document.querySelector(`#${b}`).setAttribute("visible","true"));
               document.querySelector("#replay").setAttribute("visible","false");
               loadQuestion(current);
             });
           }
         });
 
-        // Load first question
         loadQuestion(current);
-
       </script>
     </a-scene>
   </body>
