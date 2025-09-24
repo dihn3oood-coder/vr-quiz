@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>VR Quiz with Your Chosen Background</title>
+  <title>VR Quiz with Your Forest Background</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <style>body { margin:0; overflow:hidden; }</style>
 </head>
@@ -10,21 +10,21 @@
   <a-scene>
 
     <a-assets>
-      <!-- Your chosen background -->
-      <img id="customBG" src="https://stablediffusionweb.com/image/19606372-cartoon-whirling-clouds-skybox-panorama" crossorigin="anonymous">
-
+      <!-- Use your chosen background -->
+      <img id="forestBG" src="https://cdn.pixabay.com/illustrations/ai-generated-mountains-alpine-8515503.png" crossorigin="anonymous">
+      
       <!-- Flying animals (transparent PNGs) -->
       <img id="bird" src="https://cdn.pixabay.com/photo/2017/01/31/21/29/bird-2025110_64.png">
       <img id="butterfly" src="https://cdn.pixabay.com/photo/2013/07/13/11/58/butterfly-158152_64.png">
-
+      
       <!-- Correct / wrong signs -->
       <img id="correctSign" src="https://cdn.pixabay.com/photo/2013/07/12/17/42/check-154501_64.png">
       <img id="wrongSign" src="https://cdn.pixabay.com/photo/2013/07/12/17/42/cross-154503_64.png">
 
       <!-- Sounds -->
       <audio id="forestSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b526d9832e.mp3?filename=forest-birds-ambience-1080.mp3" preload="auto"></audio>
-      <audio id="correctAudio" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_2d9a1f43a0.mp3?filename=correct-2-6280.mp3" preload="auto"></audio>
-      <audio id="wrongAudio" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_5f93d2e7c5.mp3?filename=wrong-6281.mp3" preload="auto"></audio>
+      <audio id="correctAudio" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_2d9a1f43a0.mp3?filename=correct-2-6280.mp3" preload="auto"></a-assets>
+      <audio id="wrongAudio" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_5f93d2e7c5.mp3?filename=wrong-6281.mp3" preload="auto"></a-assets>
     </a-assets>
 
     <!-- Camera + cursor -->
@@ -33,14 +33,13 @@
                 raycaster="objects:.clickable"
                 position="0 0 -1"
                 geometry="primitive:ring; radiusInner:0.02; radiusOuter:0.03"
-                material="color: cyan; shader: flat">
-      </a-entity>
+                material="color: cyan; shader: flat"></a-entity>
     </a-entity>
 
-    <!-- Sky / background -->
-    <a-sky src="#customBG"></a-sky>
+    <!-- Background sky -->
+    <a-sky src="#forestBG"></a-sky>
 
-    <!-- Ambient forest sound -->
+    <!-- Ambient sound -->
     <a-entity sound="src: #forestSound; autoplay: true; loop: true; volume: 0.5"></a-entity>
 
     <!-- Flying birds / butterflies -->
@@ -49,11 +48,11 @@
     <a-image src="#butterfly" position="5 2 -8" scale="0.5 0.5 0.5"
              animation="property: position; to:-5 2 -8; dur:15000; dir: alternate; loop:true"></a-image>
 
-    <!-- Question text -->
+    <!-- Question -->
     <a-entity id="question" position="0 2.5 -3"
-              text="value: ; align: center; width: 5; color: #FFF;"></a-entity>
+              text="value: ; align:center; width:5; color:#FFF;"></a-entity>
 
-    <!-- Answer boxes + texts -->
+    <!-- Answer boxes -->
     <a-box id="option1" class="clickable" position="-3 1.2 -3" depth="0.2" height="0.5" width="1.8" color="#FFC107"></a-box>
     <a-text id="text1" value="" align="center" position="-3 1.2 -2.7" color="#000" width="2.5"></a-text>
 
@@ -63,18 +62,18 @@
     <a-box id="option3" class="clickable" position="3 1.2 -3" depth="0.2" height="0.5" width="1.8" color="#03A9F4"></a-box>
     <a-text id="text3" value="" align="center" position="3 1.2 -2.7" color="#000" width="2.5"></a-text>
 
-    <!-- Sign for correct / wrong -->
-    <a-image id="sign" src="" scale="1 1 1" visible="false"></a-image>
+    <!-- Sign -->
+    <a-image id="sign" src="" scale="0.8 0.8 0.8" visible="false"></a-image>
 
-    <!-- Score text -->
+    <!-- Score -->
     <a-entity id="score" position="0 3.2 -3"
-              text="value: Score: 0; align: center; color: #FFF; width: 4;"></a-entity>
+              text="value: Score: 0; align:center; color:#FFF; width:4;"></a-entity>
 
-    <!-- Replay button -->
+    <!-- Replay -->
     <a-box id="replay" class="clickable" position="0 -1 -3" depth="0.2" height="0.5" width="2" color="#FF9800" visible="false"></a-box>
     <a-text id="replayText" value="Replay Quiz" align="center" position="0 -1 -2.7" color="#000" width="2.5" visible="false"></a-text>
 
-    <!-- Correct / wrong sound entities -->
+    <!-- Answer sounds -->
     <a-entity id="correctSound" sound="src: #correctAudio"></a-entity>
     <a-entity id="wrongSound" sound="src: #wrongAudio"></a-entity>
 
@@ -98,7 +97,7 @@
       function loadQuestion(index) {
         const q = quiz[index];
         document.querySelector("#question").setAttribute("text", "value", q.q);
-        boxes.forEach((id, i) => {
+        boxes.forEach((id,i) => {
           document.querySelector(`#${texts[i]}`).setAttribute("value", q.options[i]);
           document.querySelector(`#${id}`).setAttribute("color", ["#FFC107","#8BC34A","#03A9F4"][i]);
         });
@@ -119,7 +118,6 @@
               document.querySelector('#wrongSound').components.sound.playSound();
               signEl.setAttribute("src", "#wrongSign");
             }
-            // position sign just above the clicked box
             signEl.setAttribute("position", { x: pos.x, y: pos.y + 0.7, z: pos.z });
             signEl.setAttribute("visible", "true");
 
