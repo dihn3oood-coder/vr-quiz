@@ -8,15 +8,19 @@
 </head>
 <body>
 <a-scene>
+
   <!-- Assets -->
   <a-assets>
     <audio id="correctSound" src="https://cdn.jsdelivr.net/gh/aframevr/assets/click.mp3"></audio>
     <audio id="wrongSound" src="https://cdn.jsdelivr.net/gh/aframevr/assets/error.mp3"></audio>
     <audio id="forestSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b526d9832e.mp3?filename=forest-birds-ambience-1080.mp3" preload="auto"></audio>
+
+    <!-- Forest background with animals -->
+    <img id="forestBG" src="https://cdn.pixabay.com/photo/2019/04/25/15/15/forest-4153721_1280.jpg">
   </a-assets>
 
   <!-- Camera + gaze cursor -->
-  <a-entity camera look-controls>
+  <a-entity camera look-controls position="0 1.6 0">
     <a-entity cursor="fuse: true; fuseTimeout: 1500"
               raycaster="objects: .clickable"
               position="0 0 -1"
@@ -25,75 +29,64 @@
     </a-entity>
   </a-entity>
 
-  <!-- Forest background -->
-  <a-sky src="https://cdn.pixabay.com/photo/2017/08/07/09/22/forest-2606214_1280.jpg"></a-sky>
+  <!-- Background -->
+  <a-sky src="#forestBG"></a-sky>
 
-  <!-- Forest ambient sound -->
+  <!-- Background sound -->
   <a-entity sound="src: #forestSound; autoplay: true; loop: true; volume: 0.5"></a-entity>
 
-  <!-- Question -->
-  <a-entity id="question" position="0 2 -4" text="value: ; align: center; width: 4; color: #FFF;"></a-entity>
+  <!-- Question text -->
+  <a-entity id="question" position="0 2 -3" text="value: ; align: center; width: 4; color: #FFF; wrapCount: 40; font: mozillavr"></a-entity>
 
-  <!-- Answer options -->
-  <a-box id="option1" class="clickable" depth="0.3" height="0.6" width="1" color="#FFC107">
-    <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
+  <!-- Answer options (organized) -->
+  <a-box id="option1" class="clickable" position="-1 1 -3" depth="0.3" height="0.6" width="2" color="#FFC107">
+    <a-text value="" align="center" position="0 0 0.2" color="#000" width="2"></a-text>
   </a-box>
-  <a-box id="option2" class="clickable" depth="0.3" height="0.6" width="1" color="#8BC34A">
-    <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
+  <a-box id="option2" class="clickable" position="0 0 -3" depth="0.3" height="0.6" width="2" color="#8BC34A">
+    <a-text value="" align="center" position="0 0 0.2" color="#000" width="2"></a-text>
   </a-box>
-  <a-box id="option3" class="clickable" depth="0.3" height="0.6" width="1" color="#03A9F4">
-    <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
-  </a-box>
-  <a-box id="option4" class="clickable" depth="0.3" height="0.6" width="1" color="#E91E63">
-    <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
+  <a-box id="option3" class="clickable" position="1 -1 -3" depth="0.3" height="0.6" width="2" color="#03A9F4">
+    <a-text value="" align="center" position="0 0 0.2" color="#000" width="2"></a-text>
   </a-box>
 
   <!-- Score -->
-  <a-entity id="score" position="0 3 -4" text="value: Score: 0; align: center; color: #FFF;"></a-entity>
+  <a-entity id="score" position="0 3 -3" text="value: Score: 0; align: center; color: #FFF; width: 4;"></a-entity>
 
   <!-- Replay button -->
-  <a-box id="replay" class="clickable" position="0 -2 -3" depth="0.3" height="0.5" width="1.5" color="#FF9800" visible="false">
-    <a-text value="Replay Quiz" align="center" position="0 0 0.2" color="#000"></a-text>
+  <a-box id="replay" class="clickable" position="0 -2 -3" depth="0.3" height="0.5" width="2" color="#FF9800" visible="false">
+    <a-text value="Replay Quiz" align="center" position="0 0 0.2" color="#000" width="2"></a-text>
   </a-box>
 
-  <!-- Moving animals -->
-  <a-sphere color="#FF5722" radius="0.1" position="-3 2 -5" animation="property: position; to:3 2 -5; dur:8000; dir: alternate; loop: true"></a-sphere>
-  <a-sphere color="#FFC107" radius="0.1" position="3 1.5 -6" animation="property: position; to:-3 1.5 -6; dur:10000; dir: alternate; loop: true"></a-sphere>
-  <a-sphere color="#4CAF50" radius="0.1" position="0 3 -7" animation="property: position; to:0 1 -7; dur:7000; dir: alternate; loop: true"></a-sphere>
-  <a-cone color="#FF69B4" radius-bottom="0.05" height="0.2" position="-2 1 -4" animation="property: position; to:2 2 -5; dur:9000; dir: alternate; loop: true"></a-cone>
-  <a-cone color="#00FFFF" radius-bottom="0.05" height="0.2" position="1 3 -6" animation="property: position; to:-1 1 -4; dur:11000; dir: alternate; loop: true"></a-cone>
+  <!-- Floating decorative animals -->
+  <a-sphere color="#FF5722" radius="0.15" position="-2 2 -4" animation="property: position; to:2 2 -4; dur:8000; dir: alternate; loop: true"></a-sphere>
+  <a-sphere color="#FFC107" radius="0.15" position="2 1.5 -5" animation="property: position; to:-2 1.5 -5; dur:10000; dir: alternate; loop: true"></a-sphere>
+  <a-cone color="#4CAF50" radius-bottom="0.1" height="0.25" position="0 3 -6" animation="property: position; to:0 1 -6; dur:9000; dir: alternate; loop: true"></a-cone>
 
   <script>
     const quiz = [
-      {q:"Which data type is 25?", options:["Text","Number","Color","Sound"], answer:1},
-      {q:"Which data type is 'Blue'?", options:["Text","Number","Color","Video"], answer:2},
-      {q:"Which data type is 'Hello'?", options:["Text","Number","Sound","Date"], answer:0},
-      {q:"Which data type is 02:30 PM?", options:["Date","Time","Number","Text"], answer:1},
-      {q:"Which data type is 12/09/2025?", options:["Date","Color","Sound","Text"], answer:0},
-      {q:"Which data type is a YouTube clip?", options:["Text","Video","Number","Color"], answer:1},
-      {q:"Which data type is music playing?", options:["Number","Sound","Text","Date"], answer:1}
+      {q:"Which data type is 25?", options:["Text","Number","Color"], answer:1},
+      {q:"Which data type is 'Blue'?", options:["Text","Number","Color"], answer:2},
+      {q:"Which data type is 'Hello'?", options:["Text","Number","Sound"], answer:0},
+      {q:"Which data type is 02:30 PM?", options:["Date","Time","Number"], answer:1},
+      {q:"Which data type is 12/09/2025?", options:["Date","Color","Sound"], answer:0},
+      {q:"Which data type is a YouTube clip?", options:["Text","Video","Number"], answer:1},
+      {q:"Which data type is music playing?", options:["Number","Sound","Text"], answer:1}
     ];
 
     let current = 0;
     let score = 0;
-    const boxes = ["option1","option2","option3","option4"];
+    const boxes = ["option1","option2","option3"];
 
     function loadQuestion(index){
       const q = quiz[index];
       document.querySelector("#question").setAttribute("text","value",q.q);
       boxes.forEach((id,i)=>{
         document.querySelector(`#${id} a-text`).setAttribute("value", q.options[i]);
-        document.querySelector(`#${id}`).setAttribute("color",["#FFC107","#8BC34A","#03A9F4","#E91E63"][i]);
-        document.querySelector(`#${id}`).setAttribute("visible","true");
-        // Random positions for VR effect
-        const x = (Math.random()*4 - 2).toFixed(2);
-        const y = (Math.random()*2 - 0.5).toFixed(2);
-        const z = (-3 - Math.random()).toFixed(2);
-        document.querySelector(`#${id}`).setAttribute("position", `${x} ${y} ${z}`);
+        document.querySelector(`#${id}`).setAttribute("color",["#FFC107","#8BC34A","#03A9F4"][i]);
       });
     }
 
-    // Gaze interaction for answers
+    // Gaze listener for answers
     AFRAME.registerComponent('gaze-listener',{
       init: function(){
         this.el.addEventListener('click', ()=>{
@@ -129,6 +122,7 @@
           current = 0;
           document.querySelector('#score').setAttribute("text","value","Score: 0");
           document.querySelector("#replay").setAttribute("visible","false");
+          boxes.forEach(b=>document.querySelector(`#${b}`).setAttribute("visible","true"));
           loadQuestion(current);
         });
       }
@@ -138,6 +132,7 @@
     document.querySelector('#replay').setAttribute('gaze-listener-replay','');
     loadQuestion(current);
   </script>
+
 </a-scene>
 </body>
 </html>
