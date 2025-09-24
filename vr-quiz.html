@@ -1,164 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>VR Box Quiz</title>
+  <title>VR Quiz with Forest</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <style>body { margin:0; overflow:hidden; }</style>
 </head>
 <body>
 <a-scene>
 
-  <!-- Assets -->
   <a-assets>
-    <img id="forestBG" src="https://cdn.pixabay.com/photo/2024/01/17/19/29/ai-generated-8515503_1280.png">
-    <img id="correctSign" src="https://cdn.pixabay.com/photo/2014/04/02/11/01/tick-305245_1280.png">
-    <img id="wrongSign" src="https://cdn.pixabay.com/photo/2014/03/24/17/21/wrong-295503_1280.png">
+    <!-- Background image -->
+    <img id="customBG" src="https://cdn.pixabay.com/photo/2024/01/17/19/29/ai-generated-8515503_1280.png" crossorigin="anonymous">
+    
+    <!-- Birds / butterfly -->
+    <img id="bird" src="https://cdn.pixabay.com/photo/2024/08/31/09/27/bird-9011043_960_720.png">
+    <img id="butterfly" src="https://cdn.pixabay.com/photo/2013/07/13/11/58/butterfly-158152_64.png">
+
+    <!-- Correct / wrong signs -->
+    <img id="correctSign" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Green_check.svg/240px-Green_check.svg.png">
+    <img id="wrongSign" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Red_X.svg/240px-Red_X.svg.png">
+
+    <!-- Sounds -->
     <audio id="forestSound" src="https://cdn.pixabay.com/download/audio/2022/02/14/audio_20772.mp3?filename=birds-forest-20772.mp3" preload="auto"></audio>
-    <audio id="correctSound" src="https://cdn.jsdelivr.net/gh/aframevr/assets/click.mp3"></audio>
-    <audio id="wrongSound" src="https://cdn.jsdelivr.net/gh/aframevr/assets/error.mp3"></audio>
+    <audio id="correctAudio" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2a1be58c07.mp3?filename=correct-2-46134.mp3" preload="auto"></audio>
+    <audio id="wrongAudio" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c8b6f05f1.mp3?filename=error-126627.mp3" preload="auto"></audio>
   </a-assets>
 
-  <!-- Camera + Gaze cursor -->
+  <!-- Camera + cursor -->
   <a-entity camera look-controls position="0 1.6 0">
-    <a-entity cursor="fuse: true; fuseTimeout: 500"
-              raycaster="objects: .clickable"
+    <a-entity cursor="fuse:true; fuseTimeout:500"
+              raycaster="objects:.clickable"
               position="0 0 -1"
-              geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-              material="color: cyan; shader: flat">
-    </a-entity>
-  </a-entity>
-
-  <!-- Background -->
-  <a-sky src="#forestBG"></a-sky>
-
-  <!-- Background sound -->
-  <a-entity id="bgSound" sound="src: #forestSound; autoplay: false; loop: true; volume: 0.5"></a-entity>
-
-  <!-- Question background -->
-  <a-plane id="questionBG" position="0 2.5 -3" width="5" height="1.2" color="#ffffff" opacity="0.8"></a-plane>
-  <a-entity id="question" position="0 2.5 -2.9"
-            text="value: ; align: center; width: 4.5; color: #000; wrapCount: 50; font: mozillavr">
-  </a-entity>
-
-  <!-- Answer boxes (clickable) -->
-  <a-box id="option1" class="clickable" position="-2 0.5 -3" depth="0.3" height="0.6" width="1.6"
-         color="#FFC107" geometry="primitive: box" material="shader: flat"></a-box>
-  <a-text id="text1" value="" align="center" position="-2 0.5 -2.5" color="#000" width="1.6" 
-          text="wrapCount:20; pointerEvents: none"></a-text>
-
-  <a-box id="option2" class="clickable" position="0 0.5 -3" depth="0.3" height="0.6" width="1.6"
-         color="#8BC34A" geometry="primitive: box" material="shader: flat"></a-box>
-  <a-text id="text2" value="" align="center" position="0 0.5 -2.5" color="#000" width="1.6" 
-          text="wrapCount:20; pointerEvents: none"></a-text>
-
-  <a-box id="option3" class="clickable" position="2 0.5 -3" depth="0.3" height="0.6" width="1.6"
-         color="#03A9F4" geometry="primitive: box" material="shader: flat"></a-box>
-  <a-text id="text3" value="" align="center" position="2 0.5 -2.5" color="#000" width="1.6" 
-          text="wrapCount:20; pointerEvents: none"></a-text>
-
-  <!-- True/False sign -->
-  <a-image id="sign" src="" visible="false" scale="0.8 0.8 0.8"></a-image>
-
-  <!-- Score -->
-  <a-entity id="score" position="0 3 -3" text="value: Score: 0; align: center; color: #000; width: 5;"></a-entity>
-
-  <!-- Replay -->
-  <a-box id="replay" class="clickable" position="0 -2 -3" depth="0.3" height="0.5" width="2" color="#FF9800" visible="false"></a-box>
-  <a-text id="replayText" value="Replay Quiz" align="center" position="0 -2 -2.8" color="#000" width="2" visible="false"></a-text>
-
-  <script>
-    const quiz = [
-      {q:"Which data type is 25?", options:["Text","Number","Color"], answer:1},
-      {q:"Which data type is 'Blue'?", options:["Text","Number","Color"], answer:2},
-      {q:"Which data type is 'Hello'?", options:["Text","Number","Sound"], answer:0},
-      {q:"Which data type is 02:30 PM?", options:["Date","Time","Number"], answer:1},
-      {q:"Which data type is 12/09/2025?", options:["Date","Color","Sound"], answer:0},
-      {q:"Which data type is a YouTube clip?", options:["Text","Video","Number"], answer:1},
-      {q:"Which data type is music playing?", options:["Number","Sound","Text"], answer:1}
-    ];
-
-    let current = 0;
-    let score = 0;
-    const boxes = ["option1","option2","option3"];
-    const texts = ["text1","text2","text3"];
-    const signEl = document.querySelector("#sign");
-
-    function loadQuestion(index){
-      const q = quiz[index];
-      document.querySelector("#question").setAttribute("text","value",q.q);
-      boxes.forEach((id,i)=>{
-        document.querySelector(`#${texts[i]}`).setAttribute("value", q.options[i]);
-        document.querySelector(`#${id}`).setAttribute("color",["#FFC107","#8BC34A","#03A9F4"][i]);
-      });
-      signEl.setAttribute("visible","false");
-    }
-
-    // Play background sound on first click
-    document.addEventListener('click', () => {
-      document.querySelector('#bgSound').components.sound.playSound();
-    }, {once:true});
-
-    // Answer handling
-    AFRAME.registerComponent('gaze-listener',{
-      init: function(){
-        this.el.addEventListener('click', ()=>{
-          const idx = boxes.indexOf(this.el.id);
-          const correct = (idx === quiz[current].answer);
-
-          if(correct){
-            score += 10;
-            document.querySelector('#correctSound').components.sound.playSound();
-            signEl.setAttribute("src","#correctSign");
-          } else {
-            document.querySelector('#wrongSound').components.sound.playSound();
-            signEl.setAttribute("src","#wrongSign");
-          }
-
-          const boxPos = this.el.getAttribute("position");
-          signEl.setAttribute("position",{x: boxPos.x, y: boxPos.y+0.7, z: boxPos.z});
-          signEl.setAttribute("visible","true");
-
-          document.querySelector('#score').setAttribute("text","value",`Score: ${score}`);
-
-          setTimeout(()=>{
-            current++;
-            if(current < quiz.length){
-              loadQuestion(current);
-            } else {
-              document.querySelector("#question").setAttribute("text","value","🎉 Quiz Finished!");
-              boxes.forEach(b=>document.querySelector(`#${b}`).setAttribute("visible","false"));
-              texts.forEach(t=>document.querySelector(`#${t}`).setAttribute("visible","false"));
-              signEl.setAttribute("visible","false");
-              document.querySelector("#replay").setAttribute("visible","true");
-              document.querySelector("#replayText").setAttribute("visible","true");
-            }
-          },1000);
-        });
-      }
-    });
-
-    // Replay
-    AFRAME.registerComponent('gaze-listener-replay',{
-      init: function(){
-        this.el.addEventListener('click', ()=>{
-          score = 0;
-          current = 0;
-          document.querySelector('#score').setAttribute("text","value","Score: 0");
-          document.querySelector("#replay").setAttribute("visible","false");
-          document.querySelector("#replayText").setAttribute("visible","false");
-          boxes.forEach(b=>document.querySelector(`#${b}`).setAttribute("visible","true"));
-          texts.forEach(t=>document.querySelector(`#${t}`).setAttribute("visible","true"));
-          loadQuestion(current);
-        });
-      }
-    });
-
-    boxes.forEach(id => document.querySelector(`#${id}`).setAttribute('gaze-listener',''));
-    document.querySelector('#replay').setAttribute('gaze-listener-replay','');
-
-    loadQuestion(current);
-  </script>
-</a-scene>
-</body>
-</html>
+              geometry="primitive:ring; radiusInner:0.02; radiusOuter:0.03"
+              material="color: cyan; shader: flat"></a-entity>
