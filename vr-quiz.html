@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>VR Quiz with Animals</title>
+  <title>VR Quiz with Forest</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <style>body { margin:0; overflow:hidden; }</style>
 </head>
@@ -12,7 +12,7 @@
   <!-- Assets -->
   <a-assets>
     <img id="forestBG" src="https://cdn.pixabay.com/photo/2018/03/15/12/31/forest-3227804_1280.jpg">
-    <img id="bird1" src="https://cdn.pixabay.com/photo/2017/01/31/21/29/bird-2025110_64.png">
+    <img id="bird" src="https://cdn.pixabay.com/photo/2017/01/31/21/29/bird-2025110_64.png">
     <img id="butterfly" src="https://cdn.pixabay.com/photo/2013/07/13/11/58/butterfly-158152_64.png">
     <audio id="forestSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b526d9832e.mp3?filename=forest-birds-ambience-1080.mp3" preload="auto"></audio>
     <audio id="correctSound" src="https://cdn.jsdelivr.net/gh/aframevr/assets/click.mp3"></audio>
@@ -21,7 +21,7 @@
 
   <!-- Camera + cursor -->
   <a-entity camera look-controls position="0 1.6 0">
-    <a-entity cursor="fuse: true; fuseTimeout: 1500"
+    <a-entity cursor="fuse: true; fuseTimeout: 1000"
               raycaster="objects: .clickable"
               position="0 0 -1"
               geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
@@ -33,32 +33,30 @@
   <a-sky src="#forestBG"></a-sky>
 
   <!-- Background sound -->
-  <a-entity sound="src: #forestSound; autoplay: true; loop: true; volume: 0.4"></a-entity>
+  <a-entity sound="src: #forestSound; autoplay: true; loop: true; volume: 0.5"></a-entity>
 
   <!-- Question text -->
   <a-entity id="question" position="0 2 -3" text="value: ; align: center; width: 4; color: #FFF; wrapCount: 40;"></a-entity>
 
   <!-- Answer boxes -->
-  <a-box id="option1" class="clickable" position="-1 1 -3" depth="0.3" height="0.6" width="2" color="#FFC107">
-    <a-text value="" align="center" position="0 0 0.2" color="#000" width="2"></a-text>
-  </a-box>
-  <a-box id="option2" class="clickable" position="0 0 -3" depth="0.3" height="0.6" width="2" color="#8BC34A">
-    <a-text value="" align="center" position="0 0 0.2" color="#000" width="2"></a-text>
-  </a-box>
-  <a-box id="option3" class="clickable" position="1 -1 -3" depth="0.3" height="0.6" width="2" color="#03A9F4">
-    <a-text value="" align="center" position="0 0 0.2" color="#000" width="2"></a-text>
-  </a-box>
+  <a-box id="option1" class="clickable" position="-1 1 -3" depth="0.3" height="0.6" width="2" color="#FFC107" sound="on: click"></a-box>
+  <a-text id="text1" value="" align="center" position="-1 1 -2.8" color="#000" width="2"></a-text>
+
+  <a-box id="option2" class="clickable" position="0 0 -3" depth="0.3" height="0.6" width="2" color="#8BC34A" sound="on: click"></a-box>
+  <a-text id="text2" value="" align="center" position="0 0 -2.8" color="#000" width="2"></a-text>
+
+  <a-box id="option3" class="clickable" position="1 -1 -3" depth="0.3" height="0.6" width="2" color="#03A9F4" sound="on: click"></a-box>
+  <a-text id="text3" value="" align="center" position="1 -1 -2.8" color="#000" width="2"></a-text>
 
   <!-- Score -->
   <a-entity id="score" position="0 3 -3" text="value: Score: 0; align: center; color: #FFF; width: 4;"></a-entity>
 
   <!-- Replay button -->
-  <a-box id="replay" class="clickable" position="0 -2 -3" depth="0.3" height="0.5" width="2" color="#FF9800" visible="false">
-    <a-text value="Replay Quiz" align="center" position="0 0 0.2" color="#000" width="2"></a-text>
-  </a-box>
+  <a-box id="replay" class="clickable" position="0 -2 -3" depth="0.3" height="0.5" width="2" color="#FF9800" visible="false" sound="on: click"></a-box>
+  <a-text id="replayText" value="Replay Quiz" align="center" position="0 -2 -2.8" color="#000" width="2" visible="false"></a-text>
 
   <!-- Floating animals -->
-  <a-image src="#bird1" position="-2 2 -4" scale="0.5 0.5 0.5" animation="property: position; to:2 2 -4; dur:8000; dir: alternate; loop: true"></a-image>
+  <a-image src="#bird" position="-2 2 -4" scale="0.5 0.5 0.5" animation="property: position; to:2 2 -4; dur:8000; dir: alternate; loop: true"></a-image>
   <a-image src="#butterfly" position="2 1.5 -5" scale="0.5 0.5 0.5" animation="property: position; to:-2 1.5 -5; dur:10000; dir: alternate; loop: true"></a-image>
 
   <script>
@@ -75,16 +73,18 @@
     let current = 0;
     let score = 0;
     const boxes = ["option1","option2","option3"];
+    const texts = ["text1","text2","text3"];
 
     function loadQuestion(index){
       const q = quiz[index];
       document.querySelector("#question").setAttribute("text","value",q.q);
       boxes.forEach((id,i)=>{
-        document.querySelector(`#${id} a-text`).setAttribute("value", q.options[i]);
+        document.querySelector(`#${texts[i]}`).setAttribute("value", q.options[i]);
         document.querySelector(`#${id}`).setAttribute("color",["#FFC107","#8BC34A","#03A9F4"][i]);
       });
     }
 
+    // Answer click handling
     AFRAME.registerComponent('gaze-listener',{
       init: function(){
         this.el.addEventListener('click', ()=>{
@@ -105,13 +105,16 @@
             } else {
               document.querySelector("#question").setAttribute("text","value","🎉 Quiz Finished!");
               boxes.forEach(b=>document.querySelector(`#${b}`).setAttribute("visible","false"));
+              texts.forEach(t=>document.querySelector(`#${t}`).setAttribute("visible","false"));
               document.querySelector("#replay").setAttribute("visible","true");
+              document.querySelector("#replayText").setAttribute("visible","true");
             }
           },1000);
         });
       }
     });
 
+    // Replay button
     AFRAME.registerComponent('gaze-listener-replay',{
       init: function(){
         this.el.addEventListener('click', ()=>{
@@ -119,7 +122,9 @@
           current = 0;
           document.querySelector('#score').setAttribute("text","value","Score: 0");
           document.querySelector("#replay").setAttribute("visible","false");
+          document.querySelector("#replayText").setAttribute("visible","false");
           boxes.forEach(b=>document.querySelector(`#${b}`).setAttribute("visible","true"));
+          texts.forEach(t=>document.querySelector(`#${t}`).setAttribute("visible","true"));
           loadQuestion(current);
         });
       }
@@ -127,6 +132,7 @@
 
     boxes.forEach(id => document.querySelector(`#${id}`).setAttribute('gaze-listener',''));
     document.querySelector('#replay').setAttribute('gaze-listener-replay','');
+
     loadQuestion(current);
   </script>
 
