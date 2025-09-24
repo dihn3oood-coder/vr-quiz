@@ -2,23 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>VR Quiz</title>
+  <title>VR Quiz with Birds</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <style>body { margin:0; overflow:hidden; }</style>
+  <style>body{margin:0;overflow:hidden;}</style>
 </head>
 <body>
 <a-scene>
 
   <!-- Assets -->
   <a-assets>
-    <!-- Working background from A-Frame CDN -->
     <img id="forestBG" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg">
-
-    <!-- Correct/Wrong sign images -->
+    <img id="bird" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Feather_icon.svg/64px-Feather_icon.svg.png">
+    <img id="butterfly" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Butterfly_icon.svg/64px-Butterfly_icon.svg.png">
     <img id="correctSign" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Yes_Check_Circle.svg/64px-Yes_Check_Circle.svg.png">
     <img id="wrongSign" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/X_mark.svg/64px-X_mark.svg.png">
 
-    <!-- Sounds (free sources) -->
+    <!-- Sounds -->
     <audio id="forestSound" src="https://cdn.jsdelivr.net/gh/anars/blank-audio/1sec.mp3" preload="auto"></audio>
     <audio id="correctAudio" src="https://freesound.org/data/previews/320/320655_4939433-lq.mp3" preload="auto"></audio>
     <audio id="wrongAudio" src="https://freesound.org/data/previews/109/109662_945474-lq.mp3" preload="auto"></audio>
@@ -30,15 +29,18 @@
               raycaster="objects:.clickable"
               position="0 0 -1"
               geometry="primitive:ring; radiusInner:0.02; radiusOuter:0.03"
-              material="color: cyan; shader: flat">
-    </a-entity>
+              material="color: cyan; shader: flat"></a-entity>
   </a-entity>
 
   <!-- Sky background -->
-  <a-sky src="#forestBG"></a-sky>
+  <a-sky src="#forestBG" color="#FFF"></a-sky>
+  <a-entity sound="src:#forestSound; autoplay:true; loop:true; volume:0.2"></a-entity>
 
-  <!-- Background sound (silent placeholder so component works) -->
-  <a-entity sound="src: #forestSound; autoplay:true; loop:true; volume:0.2"></a-entity>
+  <!-- Flying birds and butterflies -->
+  <a-image src="#bird" position="-5 3 -10" scale="0.5 0.5 0.5" 
+           animation="property: position; to:5 3 -10; dur:20000; dir: alternate; loop:true"></a-image>
+  <a-image src="#butterfly" position="5 2 -8" scale="0.5 0.5 0.5" 
+           animation="property: position; to:-5 2 -8; dur:15000; dir: alternate; loop:true"></a-image>
 
   <!-- Question -->
   <a-entity id="question" position="0 2.5 -3" text="value: ; align:center; width:5; color:#FFF;"></a-entity>
@@ -53,8 +55,8 @@
   <a-box id="option3" class="clickable" position="3 1.2 -3" depth="0.2" height="0.5" width="1.8" color="#03A9F4"></a-box>
   <a-text id="text3" value="" align="center" position="3 1.2 -2.7" color="#000" width="2.5"></a-text>
 
-  <!-- Correct/Wrong signs -->
-  <a-image id="sign" src="" position="0 0.5 -2.5" scale="0.8 0.8 0.8" visible="false"></a-image>
+  <!-- Correct/Wrong sign -->
+  <a-image id="sign" src="" position="0 2 -3" scale="0.8 0.8 0.8" visible="false"></a-image>
 
   <!-- Score -->
   <a-entity id="score" position="0 3.2 -3" text="value: Score: 0; align:center; color:#FFF; width:4;"></a-entity>
@@ -63,7 +65,7 @@
   <a-box id="replay" class="clickable" position="0 -1 -3" depth="0.2" height="0.5" width="2" color="#FF9800" visible="false"></a-box>
   <a-text id="replayText" value="Replay Quiz" align="center" position="0 -1 -2.7" color="#000" width="2.5" visible="false"></a-text>
 
-  <!-- Correct/Wrong sound entities -->
+  <!-- Sounds for answers -->
   <a-entity id="correctSound" sound="src: #correctAudio"></a-entity>
   <a-entity id="wrongSound" sound="src: #wrongAudio"></a-entity>
 
@@ -78,40 +80,41 @@
       {q:"Which data type is music playing?", options:["Number","Sound","Text"], answer:1}
     ];
 
-    let current = 0;
-    let score = 0;
-    const boxes = ["option1","option2","option3"];
-    const texts = ["text1","text2","text3"];
-    const sign = document.querySelector("#sign");
+    let current=0, score=0;
+    const boxes=["option1","option2","option3"];
+    const texts=["text1","text2","text3"];
+    const sign=document.querySelector("#sign");
 
     function loadQuestion(index){
-      const q = quiz[index];
+      const q=quiz[index];
       document.querySelector("#question").setAttribute("text","value",q.q);
       boxes.forEach((id,i)=>{
-        document.querySelector(`#${texts[i]}`).setAttribute("value", q.options[i]);
+        document.querySelector(`#${texts[i]}`).setAttribute("value",q.options[i]);
         document.querySelector(`#${id}`).setAttribute("color",["#FFC107","#8BC34A","#03A9F4"][i]);
       });
       sign.setAttribute("visible","false");
     }
 
-    // Click listener
     AFRAME.registerComponent('gaze-listener',{
-      init: function(){
-        this.el.addEventListener('click', ()=>{
-          const idx = boxes.indexOf(this.el.id);
-          if(idx === quiz[current].answer){
-            score += 10;
+      init:function(){
+        this.el.addEventListener('click',()=>{
+          const idx=boxes.indexOf(this.el.id);
+          const boxEl=document.querySelector(`#${boxes[idx]}`);
+          const boxPos=boxEl.getAttribute("position");
+          if(idx===quiz[current].answer){
+            score+=10;
             document.querySelector('#correctSound').components.sound.playSound();
             sign.setAttribute("src","#correctSign");
           } else {
             document.querySelector('#wrongSound').components.sound.playSound();
             sign.setAttribute("src","#wrongSign");
           }
+          sign.setAttribute("position",{x:boxPos.x, y:boxPos.y+0.7, z:boxPos.z});
           sign.setAttribute("visible","true");
           document.querySelector('#score').setAttribute("text","value",`Score: ${score}`);
           setTimeout(()=>{
             current++;
-            if(current < quiz.length){
+            if(current<quiz.length){
               loadQuestion(current);
             } else {
               document.querySelector("#question").setAttribute("text","value","🎉 Quiz Finished!");
@@ -126,12 +129,10 @@
       }
     });
 
-    // Replay
     AFRAME.registerComponent('gaze-listener-replay',{
-      init: function(){
-        this.el.addEventListener('click', ()=>{
-          score = 0;
-          current = 0;
+      init:function(){
+        this.el.addEventListener('click',()=>{
+          score=0; current=0;
           document.querySelector('#score').setAttribute("text","value","Score: 0");
           document.querySelector("#replay").setAttribute("visible","false");
           document.querySelector("#replayText").setAttribute("visible","false");
@@ -142,12 +143,11 @@
       }
     });
 
-    boxes.forEach(id => document.querySelector(`#${id}`).setAttribute('gaze-listener',''));
+    boxes.forEach(id=>document.querySelector(`#${id}`).setAttribute('gaze-listener',''));
     document.querySelector('#replay').setAttribute('gaze-listener-replay','');
 
     loadQuestion(current);
   </script>
-
 </a-scene>
 </body>
 </html>
