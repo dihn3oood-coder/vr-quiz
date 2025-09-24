@@ -11,8 +11,8 @@
 
   <!-- Assets -->
   <a-assets>
-    <!-- Colorful forest background -->
-    <img id="forestBG" src="https://cdn.pixabay.com/photo/2016/11/29/03/20/forest-1867273_1280.jpg" crossorigin="anonymous">
+    <!-- Reliable colorful forest background -->
+    <img id="forestBG" src="https://cdn.pixabay.com/photo/2018/03/15/12/31/forest-3227804_1280.jpg" crossorigin="anonymous">
     
     <!-- Animals -->
     <img id="bird" src="https://cdn.pixabay.com/photo/2017/01/31/21/29/bird-2025110_64.png" crossorigin="anonymous">
@@ -20,9 +20,9 @@
 
     <!-- Sounds -->
     <audio id="forestSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b526d9832e.mp3?filename=forest-birds-ambience-1080.mp3" preload="auto"></audio>
+    <audio id="birdChirp" src="https://cdn.pixabay.com/download/audio/2023/03/03/audio_2b2b7f9c2b.mp3?filename=birds-ambient-1075.mp3" preload="auto"></audio>
     <audio id="correctAudio" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3f0e9aa3b0.mp3?filename=correct-bell-13179.mp3" preload="auto"></audio>
     <audio id="wrongAudio" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_91f0c263f4.mp3?filename=error-124358.mp3" preload="auto"></audio>
-    <audio id="birdChirp" src="https://cdn.pixabay.com/download/audio/2023/03/03/audio_2b2b7f9c2b.mp3?filename=birds-ambient-1075.mp3" preload="auto"></audio>
   </a-assets>
 
   <!-- Camera + cursor -->
@@ -47,20 +47,20 @@
 
   <!-- Answer boxes -->
   <a-box id="option1" class="clickable" position="-3 1 -3" depth="0.2" height="0.5" width="1.8" color="#FFC107"></a-box>
-  <a-text id="text1" value="" align="center" position="-3 1 -2.7" color="#000" width="2.5" height="2.5"></a-text>
+  <a-text id="text1" value="" align="center" position="-3 1 -2.7" color="#000" width="2.5"></a-text>
 
   <a-box id="option2" class="clickable" position="0 1 -3" depth="0.2" height="0.5" width="1.8" color="#8BC34A"></a-box>
-  <a-text id="text2" value="" align="center" position="0 1 -2.7" color="#000" width="2.5" height="2.5"></a-text>
+  <a-text id="text2" value="" align="center" position="0 1 -2.7" color="#000" width="2.5"></a-text>
 
   <a-box id="option3" class="clickable" position="3 1 -3" depth="0.2" height="0.5" width="1.8" color="#03A9F4"></a-box>
-  <a-text id="text3" value="" align="center" position="3 1 -2.7" color="#000" width="2.5" height="2.5"></a-text>
+  <a-text id="text3" value="" align="center" position="3 1 -2.7" color="#000" width="2.5"></a-text>
 
   <!-- Score -->
   <a-entity id="score" position="0 3 -3" text="value: Score: 0; align: center; color: #FFF; width: 4;"></a-entity>
 
   <!-- Replay -->
   <a-box id="replay" class="clickable" position="0 -1 -3" depth="0.2" height="0.5" width="2" color="#FF9800" visible="false"></a-box>
-  <a-text id="replayText" value="Replay Quiz" align="center" position="0 -1 -2.7" color="#000" width="2.5"></a-text>
+  <a-text id="replayText" value="Replay Quiz" align="center" position="0 -1 -2.7" color="#000" width="2.5" visible="false"></a-text>
 
   <!-- Floating birds/butterflies -->
   <a-image src="#bird" position="-4 2 -5" scale="0.6 0.6 0.6" animation="property: position; to:4 2 -5; dur:12000; dir: alternate; loop: true"></a-image>
