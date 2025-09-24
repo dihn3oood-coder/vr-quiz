@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>VR Quiz Game</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <!-- Camera + Cursor (gaze-based selection) -->
+      <a-entity camera look-controls>
+        <a-entity cursor="fuse: true; fuseTimeout: 2000"
+                  position="0 0 -1"
+                  geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+                  material="color: cyan; shader: flat">
+        </a-entity>
+      </a-entity>
+
+      <!-- Sky / Background -->
+      <a-sky color="#B3E5FC"></a-sky>
+
+      <!-- Question text -->
+      <a-entity id="question" 
+                position="0 2 -4" 
+                text="value: ; align: center; width: 4; color: #000;">
+      </a-entity>
+
+      <!-- Option buttons -->
+      <a-box id="option1" position="-1 1 -3" depth="0.3" height="0.6" width="1"
+             color="#FFC107"
+             event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
+             event-set__leave="_event: mouseleave; scale: 1 1 1"
+             gaze-listener>
+        <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
+      </a-box>
+
+      <a-box id="option2" position="1 1 -3" depth="0.3" height="0.6" width="1"
+             color="#8BC34A"
+             event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
+             event-set__leave="_event: mouseleave; scale: 1 1 1"
+             gaze-listener>
+        <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
+      </a-box>
+
+      <a-box id="option3" position="-1 -0.5 -3" depth="0.3" height="0.6" width="1"
+             color="#03A9F4"
+             event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
+             event-set__leave="_event: mouseleave; scale: 1 1 1"
+             gaze-listener>
+        <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
+      </a-box>
+
+      <a-box id="option4" position="1 -0.5 -3" depth="0.3" height="0.6" width="1"
+             color="#E91E63"
+             event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
+             event-set__leave="_event: mouseleave; scale: 1 1 1"
+             gaze-listener>
+        <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
+      </a-box>
+
+      <script>
+        // Quiz questions
+        const quiz = [
+          {q:"Which data type is 25?", options:["Text","Number ✅","Color","Sound"], answer:1},
+          {q:"Which data type is 'Blue'?", options:["Text","Number","Color ✅","Video"], answer:2},
+          {q:"Which data type is 'Hello'?", options:["Text ✅","Number","Sound","Date"], answer:0},
+          {q:"Which data type is 02:30 PM?", options:["Date","Time ✅","Number","Text"], answer:1},
+          {q:"Which data type is 12/09/2025?", options:["Date ✅","Color","Sound","Text"], answer:0},
+          {q:"Which data type is a YouTube clip?", options:["Text","Video ✅","Number","Color"], answer:1},
+          {q:"Which data type is music playing?", options:["Number","Sound ✅","Text","Date"], answer:1}
+        ];
+
+        let current = 0;
+
+        function loadQuestion(index) {
+          const q = quiz[index];
+          document.querySelector("#question").setAttribute("text","value",q.q);
+
+          const boxes = ["option1","option2","option3","option4"];
+          boxes.forEach((id,i)=>{
+            document.querySelector(`#${id} a-text`).setAttribute("value", q.options[i]);
+          });
+        }
+
+        // Gaze listener component
+        AFRAME.registerComponent('gaze-listener',{
+          init: function(){
+            this.el.addEventListener('click',()=>{
+              const id = this.el.id;
+              const idx = parseInt(id.replace("option","")) - 1;
+              if(idx === quiz[current].answer){
+                // correct answer
+                this.el.setAttribute("color","#4CAF50");
+              } else {
+                // wrong
+                this.el.setAttribute("color","#F44336");
+              }
+              setTimeout(()=>{
+                current++;
+                if(current < quiz.length){
+                  loadQuestion(current);
+                  // reset colors
+                  boxes = ["option1","option2","option3","option4"];
+                  boxes.forEach(b=>document.querySelector(`#${b}`).setAttribute("color","#FFC107"));
+                } else {
+                  document.querySelector("#question").setAttribute("text","value","🎉 Quiz Finished!");
+                  boxes = ["option1","option2","option3","option4"];
+                  boxes.forEach(b=>document.querySelector(`#${b}`).setAttribute("visible","false"));
+                }
+              },1500);
+            });
+          }
+        });
+
+        loadQuestion(current);
+      </script>
+    </a-scene>
+  </body>
+</html>
