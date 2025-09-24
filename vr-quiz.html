@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>VR Quiz with Animals</title>
+  <title>VR Data Types Quiz</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <style>body { margin:0; overflow:hidden; }</style>
 </head>
@@ -28,13 +28,13 @@
   <!-- Forest background -->
   <a-sky src="https://cdn.pixabay.com/photo/2017/08/07/09/22/forest-2606214_1280.jpg"></a-sky>
 
-  <!-- Forest sound -->
+  <!-- Forest ambient sound -->
   <a-entity sound="src: #forestSound; autoplay: true; loop: true; volume: 0.5"></a-entity>
 
-  <!-- Question text -->
+  <!-- Question -->
   <a-entity id="question" position="0 2 -4" text="value: ; align: center; width: 4; color: #FFF;"></a-entity>
 
-  <!-- Options -->
+  <!-- Answer options -->
   <a-box id="option1" class="clickable" depth="0.3" height="0.6" width="1" color="#FFC107">
     <a-text value="" align="center" position="0 0 0.2" color="#000"></a-text>
   </a-box>
@@ -56,7 +56,7 @@
     <a-text value="Replay Quiz" align="center" position="0 0 0.2" color="#000"></a-text>
   </a-box>
 
-  <!-- Moving animals (spheres simulate birds) -->
+  <!-- Moving animals -->
   <a-sphere color="#FF5722" radius="0.1" position="-3 2 -5" animation="property: position; to:3 2 -5; dur:8000; dir: alternate; loop: true"></a-sphere>
   <a-sphere color="#FFC107" radius="0.1" position="3 1.5 -6" animation="property: position; to:-3 1.5 -6; dur:10000; dir: alternate; loop: true"></a-sphere>
   <a-sphere color="#4CAF50" radius="0.1" position="0 3 -7" animation="property: position; to:0 1 -7; dur:7000; dir: alternate; loop: true"></a-sphere>
@@ -85,6 +85,7 @@
         document.querySelector(`#${id} a-text`).setAttribute("value", q.options[i]);
         document.querySelector(`#${id}`).setAttribute("color",["#FFC107","#8BC34A","#03A9F4","#E91E63"][i]);
         document.querySelector(`#${id}`).setAttribute("visible","true");
+        // Random positions for VR effect
         const x = (Math.random()*4 - 2).toFixed(2);
         const y = (Math.random()*2 - 0.5).toFixed(2);
         const z = (-3 - Math.random()).toFixed(2);
@@ -92,6 +93,7 @@
       });
     }
 
+    // Gaze interaction for answers
     AFRAME.registerComponent('gaze-listener',{
       init: function(){
         this.el.addEventListener('click', ()=>{
@@ -119,6 +121,7 @@
       }
     });
 
+    // Replay button
     AFRAME.registerComponent('gaze-listener-replay',{
       init: function(){
         this.el.addEventListener('click', ()=>{
