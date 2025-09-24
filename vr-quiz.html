@@ -11,14 +11,14 @@
 
   <!-- Assets -->
   <a-assets>
-    <!-- Bright sunny forest background -->
-    <img id="forestBG" src="https://cdn.pixabay.com/photo/2016/10/18/21/22/forest-1759581_1280.jpg" crossorigin="anonymous">
+    <!-- Sunny forest background -->
+    <img id="forestBG" src="https://cdn.pixabay.com/photo/2016/03/09/09/22/sunrise-1246454_1280.jpg" crossorigin="anonymous">
 
-    <!-- Flying animals with transparent PNGs -->
-    <img id="bird" src="https://upload.wikimedia.org/wikipedia/commons/3/32/Bluebird_icon.png" crossorigin="anonymous">
-    <img id="butterfly" src="https://upload.wikimedia.org/wikipedia/commons/5/55/Butterfly_icon.png" crossorigin="anonymous">
+    <!-- Transparent PNG birds and butterfly -->
+    <img id="bird" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Bluebird_icon_transparent.png" crossorigin="anonymous">
+    <img id="butterfly" src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Butterfly_icon_transparent.png" crossorigin="anonymous">
 
-    <!-- Correct and wrong signs -->
+    <!-- Correct/Wrong signs -->
     <img id="correctSign" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Yes_Check_Circle.svg/64px-Yes_Check_Circle.svg.png" crossorigin="anonymous">
     <img id="wrongSign" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/X_mark.svg/64px-X_mark.svg.png" crossorigin="anonymous">
 
@@ -37,16 +37,14 @@
               material="color: cyan; shader: flat"></a-entity>
   </a-entity>
 
-  <!-- Sky background -->
+  <!-- Background -->
   <a-sky src="#forestBG"></a-sky>
-
-  <!-- Background ambient forest sound -->
   <a-entity sound="src:#forestSound; autoplay:true; loop:true; volume:0.5"></a-entity>
 
   <!-- Flying birds and butterflies -->
-  <a-image src="#bird" position="-5 3 -10" scale="0.5 0.5 0.5"
+  <a-image src="#bird" position="-5 3 -10" scale="0.8 0.8 0.8" 
            animation="property: position; to:5 3 -10; dur:20000; dir: alternate; loop:true"></a-image>
-  <a-image src="#butterfly" position="5 2 -8" scale="0.5 0.5 0.5"
+  <a-image src="#butterfly" position="5 2 -8" scale="0.8 0.8 0.8"
            animation="property: position; to:-5 2 -8; dur:15000; dir: alternate; loop:true"></a-image>
 
   <!-- Question -->
@@ -72,7 +70,7 @@
   <a-box id="replay" class="clickable" position="0 -1 -3" depth="0.2" height="0.5" width="2" color="#FF9800" visible="false"></a-box>
   <a-text id="replayText" value="Replay Quiz" align="center" position="0 -1 -2.7" color="#000" width="2.5" visible="false"></a-text>
 
-  <!-- Sounds for answers -->
+  <!-- Sounds -->
   <a-entity id="correctSound" sound="src:#correctAudio"></a-entity>
   <a-entity id="wrongSound" sound="src:#wrongAudio"></a-entity>
 
@@ -87,7 +85,7 @@
       {q:"Which data type is music playing?", options:["Number","Sound","Text"], answer:1}
     ];
 
-    let current=0,score=0;
+    let current=0, score=0;
     const boxes=["option1","option2","option3"];
     const texts=["text1","text2","text3"];
     const sign=document.querySelector("#sign");
@@ -154,7 +152,6 @@
 
     loadQuestion(current);
   </script>
-
 </a-scene>
 </body>
 </html>
