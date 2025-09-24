@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>VR Quiz with Your Background</title>
+  <title>VR Quiz with Moving Questions</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <style>body { margin:0; overflow:hidden; }</style>
 </head>
@@ -13,12 +13,8 @@
       <!-- Your chosen background image -->
       <img id="customBG" src="https://cdn.pixabay.com/photo/2024/01/17/19/29/ai-generated-8515503_1280.png" crossorigin="anonymous">
 
-      <!-- Flying animals (PNG) -->
-      <img id="bird" src="https://cdn.pixabay.com/photo/2017/01/31/21/29/bird-2025110_64.png">
-      <img id="butterfly" src="https://cdn.pixabay.com/photo/2013/07/13/11/58/butterfly-158152_64.png">
-
       <!-- Correct / wrong signs -->
-      <img id="correctSign" src="https://cdn.pixabay.com/photo/2014/04/02/11/01/tick-305245_1280.png">
+      <img id="correctSign" src="https://cdn.pixabay.com/photo/2014/03/24/17/21/wrong-295503_1280.png">
       <img id="wrongSign" src="https://cdn.pixabay.com/photo/2012/04/13/00/22/red-31226_960_720.png">
 
       <!-- Sounds -->
@@ -41,12 +37,6 @@
 
     <!-- Ambient forest sound -->
     <a-entity sound="src: #forestSound; autoplay: true; loop: true; volume: 0.5"></a-entity>
-
-    <!-- Flying birds / butterflies -->
-    <a-image src="#bird" position="-5 3 -10" scale="0.5 0.5 0.5"
-             animation="property: position; to:5 3 -10; dur:20000; dir: alternate; loop:true"></a-image>
-    <a-image src="#butterfly" position="5 2 -8" scale="0.5 0.5 0.5"
-             animation="property: position; to:-5 2 -8; dur:15000; dir: alternate; loop:true"></a-image>
 
     <!-- Question -->
     <a-entity id="question" position="0 2.5 -3"
@@ -94,13 +84,34 @@
       const texts = ["text1","text2","text3"];
       const signEl = document.querySelector("#sign");
 
+      function randomPosition() {
+        const x = (Math.random() * 6) - 3; // -3 to 3
+        const y = 1.2 + Math.random() * 1.5; // 1.2 to 2.7
+        const z = -2 - Math.random() * 4; // -2 to -6
+        return {x, y, z};
+      }
+
       function loadQuestion(index) {
         const q = quiz[index];
         document.querySelector("#question").setAttribute("text", "value", q.q);
+
+        // Random position for question
+        const qPos = randomPosition();
+        document.querySelector("#question").setAttribute("position", qPos);
+
+        // Random positions for answers around question
         boxes.forEach((id,i) => {
+          const pos = {
+            x: qPos.x + (i-1)*2, // spread answers horizontally around question
+            y: qPos.y - 1,
+            z: qPos.z
+          };
+          document.querySelector(`#${id}`).setAttribute("position", pos);
+          document.querySelector(`#${texts[i]}`).setAttribute("position", {x: pos.x, y: pos.y, z: pos.z + 0.3});
           document.querySelector(`#${texts[i]}`).setAttribute("value", q.options[i]);
           document.querySelector(`#${id}`).setAttribute("color", ["#FFC107","#8BC34A","#03A9F4"][i]);
         });
+
         signEl.setAttribute("visible", "false");
       }
 
