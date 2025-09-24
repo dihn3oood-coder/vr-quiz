@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>VR Quiz with Moving Questions</title>
+  <title>VR Quiz Moving Questions</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <style>body { margin:0; overflow:hidden; }</style>
 </head>
@@ -10,20 +10,13 @@
   <a-scene>
 
     <a-assets>
-      <!-- Your chosen background image -->
       <img id="customBG" src="https://cdn.pixabay.com/photo/2024/01/17/19/29/ai-generated-8515503_1280.png" crossorigin="anonymous">
-
-      <!-- Correct / wrong signs -->
       <img id="correctSign" src="https://cdn.pixabay.com/photo/2014/03/24/17/21/wrong-295503_1280.png">
       <img id="wrongSign" src="https://cdn.pixabay.com/photo/2012/04/13/00/22/red-31226_960_720.png">
-
-      <!-- Sounds -->
-      <audio id="forestSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b526d9832e.mp3?filename=forest-birds-ambience-1080.mp3" preload="auto"></audio>
       <audio id="correctAudio" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_2d9a1f43a0.mp3?filename=correct-2-6280.mp3" preload="auto"></audio>
       <audio id="wrongAudio" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_5f93d2e7c5.mp3?filename=wrong-6281.mp3" preload="auto"></audio>
     </a-assets>
 
-    <!-- Camera + cursor -->
     <a-entity camera look-controls position="0 1.6 0">
       <a-entity cursor="fuse:true; fuseTimeout:500"
                 raycaster="objects:.clickable"
@@ -32,38 +25,30 @@
                 material="color: cyan; shader: flat"></a-entity>
     </a-entity>
 
-    <!-- Background sky -->
     <a-sky src="#customBG"></a-sky>
 
-    <!-- Ambient forest sound -->
-    <a-entity sound="src: #forestSound; autoplay: true; loop: true; volume: 0.5"></a-entity>
-
     <!-- Question -->
-    <a-entity id="question" position="0 2.5 -3"
-              text="value: ; align:center; width:5; color:#FFF;"></a-entity>
+    <a-entity id="question" position="0 2.5 -3" text="value: ; align:center; width:5; color:#FFF;"></a-entity>
 
     <!-- Answer boxes + text -->
-    <a-box id="option1" class="clickable" position="-3 1.2 -3" depth="0.2" height="0.5" width="1.8" color="#FFC107"></a-box>
-    <a-text id="text1" value="" align="center" position="-3 1.2 -2.7" color="#000" width="2.5"></a-text>
+    <a-box id="option1" class="clickable" depth="0.2" height="0.5" width="1.8" color="#FFC107"></a-box>
+    <a-text id="text1" value="" align="center" color="#000" width="2.5"></a-text>
 
-    <a-box id="option2" class="clickable" position="0 1.2 -3" depth="0.2" height="0.5" width="1.8" color="#8BC34A"></a-box>
-    <a-text id="text2" value="" align="center" position="0 1.2 -2.7" color="#000" width="2.5"></a-text>
+    <a-box id="option2" class="clickable" depth="0.2" height="0.5" width="1.8" color="#8BC34A"></a-box>
+    <a-text id="text2" value="" align="center" color="#000" width="2.5"></a-text>
 
-    <a-box id="option3" class="clickable" position="3 1.2 -3" depth="0.2" height="0.5" width="1.8" color="#03A9F4"></a-box>
-    <a-text id="text3" value="" align="center" position="3 1.2 -2.7" color="#000" width="2.5"></a-text>
+    <a-box id="option3" class="clickable" depth="0.2" height="0.5" width="1.8" color="#03A9F4"></a-box>
+    <a-text id="text3" value="" align="center" color="#000" width="2.5"></a-text>
 
-    <!-- Sign for correct / wrong -->
     <a-image id="sign" src="" scale="0.8 0.8 0.8" visible="false"></a-image>
 
     <!-- Score -->
-    <a-entity id="score" position="0 3.2 -3"
-              text="value: Score: 0; align:center; color:#FFF; width:4;"></a-entity>
+    <a-entity id="score" position="0 3.2 -3" text="value: Score: 0; align:center; color:#FFF; width:4;"></a-entity>
 
     <!-- Replay -->
-    <a-box id="replay" class="clickable" position="0 -1 -3" depth="0.2" height="0.5" width="2" color="#FF9800" visible="false"></a-box>
+    <a-box id="replay" class="clickable" depth="0.2" height="0.5" width="2" color="#FF9800" visible="false"></a-box>
     <a-text id="replayText" value="Replay Quiz" align="center" position="0 -1 -2.7" color="#000" width="2.5" visible="false"></a-text>
 
-    <!-- Sounds for answers -->
     <a-entity id="correctSound" sound="src: #correctAudio"></a-entity>
     <a-entity id="wrongSound" sound="src: #wrongAudio"></a-entity>
 
@@ -73,9 +58,7 @@
         { q: "Which data type is 'Blue'?", options: ["Text","Number","Color"], answer: 2 },
         { q: "Which data type is 'Hello'?", options: ["Text","Number","Sound"], answer: 0 },
         { q: "Which data type is 02:30 PM?", options: ["Date","Time","Number"], answer: 1 },
-        { q: "Which data type is 12/09/2025?", options: ["Date","Color","Sound"], answer: 0 },
-        { q: "Which data type is a YouTube clip?", options: ["Text","Video","Number"], answer: 1 },
-        { q: "Which data type is music playing?", options: ["Number","Sound","Text"], answer: 1 }
+        { q: "Which data type is 12/09/2025?", options: ["Date","Color","Sound"], answer: 0 }
       ];
 
       let current = 0;
@@ -85,31 +68,28 @@
       const signEl = document.querySelector("#sign");
 
       function randomPosition() {
-        const x = (Math.random() * 6) - 3; // -3 to 3
-        const y = 1.2 + Math.random() * 1.5; // 1.2 to 2.7
-        const z = -2 - Math.random() * 4; // -2 to -6
-        return {x, y, z};
+        return {
+          x: (Math.random() * 6) - 3,  // -3 to 3
+          y: 1.5 + Math.random() * 1.5, // 1.5 to 3
+          z: -2 - Math.random() * 4 // -2 to -6
+        };
       }
 
       function loadQuestion(index) {
         const q = quiz[index];
-        document.querySelector("#question").setAttribute("text", "value", q.q);
-
-        // Random position for question
         const qPos = randomPosition();
+        document.querySelector("#question").setAttribute("text", "value", q.q);
         document.querySelector("#question").setAttribute("position", qPos);
 
-        // Random positions for answers around question
         boxes.forEach((id,i) => {
           const pos = {
-            x: qPos.x + (i-1)*2, // spread answers horizontally around question
+            x: qPos.x + (i-1)*2,
             y: qPos.y - 1,
             z: qPos.z
           };
           document.querySelector(`#${id}`).setAttribute("position", pos);
           document.querySelector(`#${texts[i]}`).setAttribute("position", {x: pos.x, y: pos.y, z: pos.z + 0.3});
           document.querySelector(`#${texts[i]}`).setAttribute("value", q.options[i]);
-          document.querySelector(`#${id}`).setAttribute("color", ["#FFC107","#8BC34A","#03A9F4"][i]);
         });
 
         signEl.setAttribute("visible", "false");
