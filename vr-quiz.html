@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>VR Quiz Sunny Forest</title>
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <style>body{margin:0;overflow:hidden;}</style>
+<meta charset="UTF-8">
+<title>VR Quiz with Birds</title>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+<style>body{margin:0;overflow:hidden;}</style>
 </head>
 <body>
 <a-scene>
 
   <!-- Assets -->
   <a-assets>
-    <!-- Sunny forest background -->
-    <img id="forestBG" src="https://cdn.pixabay.com/photo/2016/03/09/09/22/sunrise-1246454_1280.jpg" crossorigin="anonymous">
+    <!-- Free background forest image -->
+    <img id="forestBG" src="https://cdn.pixabay.com/photo/2015/07/17/22/43/tree-849892_1280.jpg">
 
-    <!-- Transparent PNG birds and butterfly -->
-    <img id="bird" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Bluebird_icon_transparent.png" crossorigin="anonymous">
-    <img id="butterfly" src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Butterfly_icon_transparent.png" crossorigin="anonymous">
+    <!-- Free flying birds/butterfly images -->
+    <img id="bird" src="https://cdn.pixabay.com/photo/2017/01/31/21/29/bird-2025110_64.png">
+    <img id="butterfly" src="https://cdn.pixabay.com/photo/2013/07/13/11/58/butterfly-158152_64.png">
 
     <!-- Correct/Wrong signs -->
-    <img id="correctSign" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Yes_Check_Circle.svg/64px-Yes_Check_Circle.svg.png" crossorigin="anonymous">
-    <img id="wrongSign" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/X_mark.svg/64px-X_mark.svg.png" crossorigin="anonymous">
+    <img id="correctSign" src="https://cdn.pixabay.com/photo/2013/07/12/17/42/check-154501_64.png">
+    <img id="wrongSign" src="https://cdn.pixabay.com/photo/2013/07/12/17/42/cross-154503_64.png">
 
     <!-- Sounds -->
     <audio id="forestSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b526d9832e.mp3?filename=forest-birds-ambience-1080.mp3" preload="auto"></audio>
-    <audio id="correctAudio" src="https://freesound.org/data/previews/320/320655_4939433-lq.mp3" preload="auto"></audio>
-    <audio id="wrongAudio" src="https://freesound.org/data/previews/109/109662_945474-lq.mp3" preload="auto"></audio>
+    <audio id="correctAudio" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_2d9a1f43a0.mp3?filename=correct-2-6280.mp3" preload="auto"></audio>
+    <audio id="wrongAudio" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_5f93d2e7c5.mp3?filename=wrong-6281.mp3" preload="auto"></audio>
   </a-assets>
 
   <!-- Camera + cursor -->
@@ -41,10 +41,10 @@
   <a-sky src="#forestBG"></a-sky>
   <a-entity sound="src:#forestSound; autoplay:true; loop:true; volume:0.5"></a-entity>
 
-  <!-- Flying birds and butterflies -->
-  <a-image src="#bird" position="-5 3 -10" scale="0.8 0.8 0.8" 
+  <!-- Flying birds/butterfly -->
+  <a-image src="#bird" position="-5 3 -10" scale="0.5 0.5 0.5" 
            animation="property: position; to:5 3 -10; dur:20000; dir: alternate; loop:true"></a-image>
-  <a-image src="#butterfly" position="5 2 -8" scale="0.8 0.8 0.8"
+  <a-image src="#butterfly" position="5 2 -8" scale="0.5 0.5 0.5" 
            animation="property: position; to:-5 2 -8; dur:15000; dir: alternate; loop:true"></a-image>
 
   <!-- Question -->
@@ -152,6 +152,7 @@
 
     loadQuestion(current);
   </script>
+
 </a-scene>
 </body>
 </html>
