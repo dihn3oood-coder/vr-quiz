@@ -26,7 +26,7 @@
 
       <!-- Camera + Cursor -->
       <a-entity camera look-controls position="0 1.6 0">
-        <a-entity cursor="fuse: true; fuseTimeout: 1000"
+        <a-entity cursor="fuse: true; fuseTimeout: 500"
                   raycaster="objects: .clickable"
                   position="0 0 -1"
                   geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
@@ -41,17 +41,17 @@
       <a-entity id="bgSound" sound="src: #forestSound; autoplay: false; loop: true; volume: 0.5"></a-entity>
 
       <!-- Question -->
-      <a-entity id="question" position="0 2 -3" text="value: ; align: center; width: 5; color: #000; wrapCount: 40;"></a-entity>
+      <a-entity id="question" position="0 2.2 -3" text="value: ; align: center; width: 4; color: #000; wrapCount: 50; font: mozillavr"></a-entity>
 
       <!-- Answer boxes -->
-      <a-box id="option1" class="clickable" position="-1.5 0.8 -3" depth="0.2" height="0.5" width="1.8" color="#FFC107"></a-box>
-      <a-text id="text1" value="" align="center" position="-1.5 0.8 -2.8" color="#000" width="2"></a-text>
+      <a-box id="option1" class="clickable" position="-2 0.8 -3" depth="0.3" height="0.5" width="1.5" color="#FFC107"></a-box>
+      <a-text id="text1" value="" align="center" position="-2 0.8 -2.7" color="#000" width="1.5"></a-text>
 
-      <a-box id="option2" class="clickable" position="0 0 -3" depth="0.2" height="0.5" width="1.8" color="#8BC34A"></a-box>
-      <a-text id="text2" value="" align="center" position="0 0 -2.8" color="#000" width="2"></a-text>
+      <a-box id="option2" class="clickable" position="0 0 -3" depth="0.3" height="0.5" width="1.5" color="#8BC34A"></a-box>
+      <a-text id="text2" value="" align="center" position="0 0 -2.7" color="#000" width="1.5"></a-text>
 
-      <a-box id="option3" class="clickable" position="1.5 -0.8 -3" depth="0.2" height="0.5" width="1.8" color="#03A9F4"></a-box>
-      <a-text id="text3" value="" align="center" position="1.5 -0.8 -2.8" color="#000" width="2"></a-text>
+      <a-box id="option3" class="clickable" position="2 -0.8 -3" depth="0.3" height="0.5" width="1.5" color="#03A9F4"></a-box>
+      <a-text id="text3" value="" align="center" position="2 -0.8 -2.7" color="#000" width="1.5"></a-text>
 
       <!-- True/False sign -->
       <a-image id="sign" src="" visible="false" scale="0.8 0.8 0.8"></a-image>
@@ -80,7 +80,6 @@
         const texts = ["text1","text2","text3"];
         const signEl = document.querySelector("#sign");
 
-        // Load question
         function loadQuestion(index){
           const q = quiz[index];
           document.querySelector("#question").setAttribute("text","value",q.q);
@@ -96,7 +95,7 @@
           document.querySelector('#bgSound').components.sound.playSound();
         }, {once:true});
 
-        // Answer click handling
+        // Answer click
         AFRAME.registerComponent('gaze-listener',{
           init: function(){
             this.el.addEventListener('click', ()=>{
@@ -112,7 +111,6 @@
                 signEl.setAttribute("src","#wrongSign");
               }
 
-              // Position sign above clicked box
               const boxPos = this.el.getAttribute("position");
               signEl.setAttribute("position",{x: boxPos.x, y: boxPos.y+0.7, z: boxPos.z});
               signEl.setAttribute("visible","true");
