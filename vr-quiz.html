@@ -11,9 +11,9 @@
 
   <!-- Assets -->
   <a-assets>
-    <img id="forestBG" src="https://cdn.pixabay.com/photo/2018/03/15/12/31/forest-3227804_1280.jpg">
-    <img id="bird" src="https://cdn.pixabay.com/photo/2017/01/31/21/29/bird-2025110_64.png">
-    <img id="butterfly" src="https://cdn.pixabay.com/photo/2013/07/13/11/58/butterfly-158152_64.png">
+    <img id="forestBG" src="https://cdn.pixabay.com/photo/2018/03/15/12/31/forest-3227804_1280.jpg" crossorigin="anonymous">
+    <img id="bird" src="https://cdn.pixabay.com/photo/2017/01/31/21/29/bird-2025110_64.png" crossorigin="anonymous">
+    <img id="butterfly" src="https://cdn.pixabay.com/photo/2013/07/13/11/58/butterfly-158152_64.png" crossorigin="anonymous">
     <audio id="forestSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b526d9832e.mp3?filename=forest-birds-ambience-1080.mp3" preload="auto"></audio>
     <audio id="correctAudio" src="https://cdn.jsdelivr.net/gh/aframevr/assets/click.mp3" preload="auto"></audio>
     <audio id="wrongAudio" src="https://cdn.jsdelivr.net/gh/aframevr/assets/error.mp3" preload="auto"></audio>
@@ -35,31 +35,31 @@
   <!-- Background sound -->
   <a-entity sound="src: #forestSound; autoplay: true; loop: true; volume: 0.5"></a-entity>
 
-  <!-- Question text -->
+  <!-- Question -->
   <a-entity id="question" position="0 2 -3" text="value: ; align: center; width: 4; color: #FFF; wrapCount: 40;"></a-entity>
 
-  <!-- Answer boxes -->
-  <a-box id="option1" class="clickable" position="-1 1.5 -3" depth="0.3" height="0.6" width="2" color="#FFC107"></a-box>
-  <a-text id="text1" value="" align="center" position="-1 1.5 -2.8" color="#000" width="2"></a-text>
+  <!-- Answer boxes and text -->
+  <a-box id="option1" class="clickable" position="-2 1 -3" depth="0.3" height="0.6" width="2" color="#FFC107"></a-box>
+  <a-text id="text1" value="" align="center" position="-2 1 -2.7" color="#000" width="2"></a-text>
 
-  <a-box id="option2" class="clickable" position="0 1.5 -3" depth="0.3" height="0.6" width="2" color="#8BC34A"></a-box>
-  <a-text id="text2" value="" align="center" position="0 1.5 -2.8" color="#000" width="2"></a-text>
+  <a-box id="option2" class="clickable" position="0 1 -3" depth="0.3" height="0.6" width="2" color="#8BC34A"></a-box>
+  <a-text id="text2" value="" align="center" position="0 1 -2.7" color="#000" width="2"></a-text>
 
-  <a-box id="option3" class="clickable" position="1 1.5 -3" depth="0.3" height="0.6" width="2" color="#03A9F4"></a-box>
-  <a-text id="text3" value="" align="center" position="1 1.5 -2.8" color="#000" width="2"></a-text>
+  <a-box id="option3" class="clickable" position="2 1 -3" depth="0.3" height="0.6" width="2" color="#03A9F4"></a-box>
+  <a-text id="text3" value="" align="center" position="2 1 -2.7" color="#000" width="2"></a-text>
 
   <!-- Score -->
   <a-entity id="score" position="0 3 -3" text="value: Score: 0; align: center; color: #FFF; width: 4;"></a-entity>
 
-  <!-- Replay button -->
+  <!-- Replay -->
   <a-box id="replay" class="clickable" position="0 -1 -3" depth="0.3" height="0.5" width="2" color="#FF9800" visible="false"></a-box>
-  <a-text id="replayText" value="Replay Quiz" align="center" position="0 -1 -2.8" color="#000" width="2" visible="false"></a-text>
+  <a-text id="replayText" value="Replay Quiz" align="center" position="0 -1 -2.7" color="#000" width="2" visible="false"></a-text>
 
   <!-- Floating animals -->
-  <a-image src="#bird" position="-2 2 -4" scale="0.5 0.5 0.5" animation="property: position; to:2 2 -4; dur:8000; dir: alternate; loop: true"></a-image>
-  <a-image src="#butterfly" position="2 1.5 -5" scale="0.5 0.5 0.5" animation="property: position; to:-2 1.5 -5; dur:10000; dir: alternate; loop: true"></a-image>
+  <a-image src="#bird" position="-3 2 -5" scale="0.5 0.5 0.5" animation="property: position; to:3 2 -5; dur:12000; dir: alternate; loop: true"></a-image>
+  <a-image src="#butterfly" position="3 1.5 -6" scale="0.5 0.5 0.5" animation="property: position; to:-3 1.5 -6; dur:15000; dir: alternate; loop: true"></a-image>
 
-  <!-- Sound entities for correct/wrong -->
+  <!-- Sounds entities -->
   <a-entity id="correctSound" sound="src: #correctAudio"></a-entity>
   <a-entity id="wrongSound" sound="src: #wrongAudio"></a-entity>
 
@@ -88,7 +88,7 @@
       });
     }
 
-    // Answer click handling
+    // Click/gaze listener
     AFRAME.registerComponent('gaze-listener',{
       init: function(){
         this.el.addEventListener('click', ()=>{
@@ -118,7 +118,7 @@
       }
     });
 
-    // Replay button
+    // Replay
     AFRAME.registerComponent('gaze-listener-replay',{
       init: function(){
         this.el.addEventListener('click', ()=>{
