@@ -1,1 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Moon Quiz Adventure</title>
+    <meta name="description" content="Moon Quiz Adventure VR">
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <!-- Moon surface -->
+      <a-plane position="0 0 0" rotation="-90 0 0" width="50" height="200" color="#888888"></a-plane>
+
+      <!-- Spacecraft -->
+      <a-box position="0 1 140" depth="2" height="2" width="2" color="silver"></a-box>
+      <a-text value="Spacecraft" position="0 3 140" align="center"></a-text>
+
+      <!-- Player camera -->
+      <a-entity id="cameraRig">
+        <a-camera position="0 1.6 0" look-controls wasd-controls>
+          <a-cursor></a-cursor>
+        </a-camera>
+      </a-entity>
+
+      <!-- Feedback text -->
+      <a-text id="feedback" value="" position="0 4 -2" align="center" color="yellow"></a-text>
+
+      <!-- Questions & Answers -->
+      <!-- Question 1 -->
+      <a-box id="Q1Panel" position="0 1 20" width="4" height="2" depth="0.1" color="#444">
+        <a-text value="Q1: Which data type is 25?" position="0 0 0.1" align="center"></a-text>
+      </a-box>
+      <a-box id="Q1A" position="-3 0.5 20" depth="1" height="1" width="1" color="red"></a-box>
+      <a-text value="Text" position="-3 1.5 20" align="center"></a-text>
+      <a-box id="Q1B" position="-1 0.5 20" depth="1" height="1" width="1" color="green"></a-box>
+      <a-text value="Number" position="-1 1.5 20" align="center"></a-text>
+      <a-box id="Q1C" position="1 0.5 20" depth="1" height="1" width="1" color="blue"></a-box>
+      <a-text value="Color" position="1 1.5 20" align="center"></a-text>
+      <a-box id="Q1D" position="3 0.5 20" depth="1" height="1" width="1" color="orange"></a-box>
+      <a-text value="Sound" position="3 1.5 20" align="center"></a-text>
+
+      <!-- Question 2 -->
+      <a-box id="Q2Panel" position="0 1 40" width="4" height="2" depth="0.1" color="#444">
+        <a-text value='Q2: Which data type is "Blue"?' position="0 0 0.1" align="center"></a-text>
+      </a-box>
+      <a-box id="Q2A" position="-3 0.5 40" depth="1" height="1" width="1" color="red"></a-box>
+      <a-text value="Text" position="-3 1.5 40" align="center"></a-text>
+      <a-box id="Q2B" position="-1 0.5 40" depth="1" height="1" width="1" color="green"></a-box>
+      <a-text value="Number" position="-1 1.5 40" align="center"></a-text>
+      <a-box id="Q2C" position="1 0.5 40" depth="1" height="1" width="1" color="blue"></a-box>
+      <a-text value="Color" position="1 1.5 40" align="center"></a-text>
+      <a-box id="Q2D" position="3 0.5 40" depth="1" height="1" width="1" color="orange"></a-box>
+      <a-text value="Video" position="3 1.5 40" align="center"></a-text>
+
+      <!-- Question 3 -->
+      <a-box id="Q3Panel" position="0 1 60" width="4" height="2" depth="0.1" color="#444">
+        <a-text value='Q3: Which data type is "Hello"?' position="0 0 0.1" align="center"></a-text>
+      </a-box>
+      <a-box id="Q3A" position="-2 0.5 60" depth="1" height="1" width="1" color="green"></a-box>
+      <a-text value="Text" position="-2 1.5 60" align="center"></a-text>
+      <a-box id="Q3B" position="0 0.5 60" depth="1" height="1" width="1" color="blue"></a-box>
+      <a-text value="Number" position="0 1.5 60" align="center"></a-text>
+      <a-box id="Q3C" position="2 0.5 60" depth="1" height="1" width="1" color="orange"></a-box>
+      <a-text value="Sound" position="2 1.5 60" align="center"></a-text>
+      <a-box id="Q3D" position="4 0.5 60" depth="1" height="1" width="1" color="purple"></a-box>
+      <a-text value="Date" position="4 1.5 60" align="center"></a-text>
+
+      <!-- Question 4 -->
+      <a-box id="Q4Panel" position="0 1 80" width="4" height="2" depth="0.1" color="#444">
+        <a-text value='Q4: Which data type is 02:30 PM?' position="0 0 0.1" align="center"></a-text>
+      </a-box>
+      <a-box id="Q4A" position="-3 0.5 80" depth="1" height="1" width="1" color="red"></a-box>
+      <a-text value="Date" position="-3 1.5 80" align="center"></a-text>
+      <a-box id="Q4B" position="-1 0.5 80" depth="1" height="1" width="1" color="green"></a-box>
+      <a-text value="Time" position="-1 1.5 80" align="center"></a-text>
+      <a-box id="Q4C" position="1 0.5 80" depth="1" height="1" width="1" color="blue"></a-box>
+      <a-text value="Number" position="1 1.5 80" align="center"></a-text>
+      <a-box id="Q4D" position="3 0.5 80" depth="1" height="1" width="1" color="orange"></a-box>
+      <a-text value="Text" position="3 1.5 80" align="center"></a-text>
+
+      <!-- Question 5 -->
+      <a-box id="Q5Panel" position="0 1 100" width="4" height="2" depth="0.1" color="#444">
+        <a-text value='Q5: Which data type is 12/09/2025?' position="0 0 0.1" align="center"></a-text>
+      </a-box>
+      <a-box id="Q5A" position="-2 0.5 100" depth="1" height="1" width="1" color="green"></a-box>
+      <a-text value="Date" position="-2 1.5 100" align="center"></a-text>
+      <a-box id="Q5B" position="0 0.5 100" depth="1" height="1" width="1" color="red"></a-box>
+      <a-text value="Color" position="0 1.5 100" align="center"></a-text>
+      <a-box id="Q5C" position="2 0.5 100" depth="1" height="1" width="1" color="blue"></a-box>
+      <a-text value="Sound" position="2 1.5 100" align="center"></a-text>
+      <a-box id="Q5D" position="4 0.5 100" depth="1" height="1" width="1" color="orange"></a-box>
+      <a-text value="Text" position="4 1.5 100" align="center"></a-text>
+
+      <!-- Question 6 -->
+      <a-box id="Q6Panel" position
 
