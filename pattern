@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>VR Pattern Game - Prototype</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1"/>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <!-- Cursor for gaze selection (fuse) -->
+      <a-entity id="cameraRig">
+        <a-entity camera position="0 1.6 0">
+          <a-entity cursor="fuse: true; fuseTimeout: 900"
+                    position="0 0 -1"
+                    geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.04"
+                    material="shader: flat; opacity: 0.9">
+          </a-entity>
+        </a-entity>
+      </a-entity>
+
+      <!-- 360 sky background (placeholder image) -->
+      <a-sky id="sky" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg"></a-sky>
+
+      <!-- Sequence display: three items shown in front -->
+      <a-entity id="sequence" position="0 1.6 -2"></a-entity>
+
+      <!-- Choice panels -->
+      <a-entity id="choices" position="0 1.2 -1.2">
+        <a-plane id="choice1" class="choice" position="-0.9 0 0" width="0.9" height="0.9" material="color:#fff"
+                 text="value: ; align:center; wrapCount:10"></a-plane>
+        <a-plane id="choice2" class="choice" position="0 0 0" width="0.9" height="0.9" material="color:#fff"
+                 text="value: ; align:center; wrapCount:10"></a-plane>
+        <a-plane id="choice3" class="choice" position="0.9 0 0" width="0.9" height="0.9" material="color:#fff"
+                 text="value: ; align:center; wrapCount:10"></a-plane>
+      </a-entity>
+
+      <!-- Feedback text -->
+      <a-entity id="feedback" position="0 2 -1.4" text="value: Look at the sequence; then choose the next; align:center; width:3"></a-entity>
+
+      <script>
+        // Simple data: AB pattern (red, blue, red, ?)
+        const pattern = ['🔴','🔵','🔴']; // what kids see
+        const correct = '🔵'; // expected next
+        const distractors = ['🟢','🔺']; // incorrect options
+
+        const seqEntity = document.querySelector('#sequence');
+        const feedback = document.querySelector('#feedback');
+        const choices = [
+          document.querySelector('#choice1'),
+          document.querySelector('#choice2'),
+          document.querySelector('#choice3')
+        ];
+
+        // Render sequence as text planes
+        function showSequence() {
+          // clear children
+          while (seqEntity.firstChild) seqEntity.removeChild(seqEntity.firstChild);
+          pattern.forEach((item, i) => {
+            const ent = document.createElement('a-entity');
+            ent.setAttribute('position', `${(i-1)*0.7} 0 0`);
+            ent.setAttribute('text', `value: ${item}; align:center; width:1.2; color:#000;`);
+            seqEntity.appendChild(ent);
+          });
+        }
+
+        // Place choices randomly
+        function showChoices() {
+          const options = [correct, ...distractors].sort(()=>Math.random()-0.5);
+          options.forEach((opt, idx) => {
+            choices[idx].setAttribute('text', `value: ${opt}; align:center; width:1.0; color:#000;`);
+            choices[idx].setAttribute('material', 'color', '#fff');
+            // attach event listeners for gaze selection
+            choices[idx].addEventListener('click', () => handleChoice(opt, choices[idx]));
+            // for cursor fuse select, also listen to 'mouseenter' && 'mouseleave' could be used for custom fuse visuals
+          });
+        }
+
+        function handleChoice(selected, el) {
+          if (selected === correct) {
+            feedback.setAttribute('text', 'value: Correct! Great job!; align:center; width:3');
+            el.setAttribute('material', 'color', '#b2ffb2'); // green flash
+            // TODO: award star, advance level or show animation
+          } else {
+            feedback.setAttribute('text', 'value: Oops — try showing the pattern again.; align:center; width:3');
+            el.setAttribute('material', 'color', '#ffb2b2'); // red flash
+            // show correct after a moment
+            setTimeout(()=> {
+              feedback.setAttribute('text', `value: The correct answer is ${correct}; align:center; width:3`);
+            }, 900);
+          }
+        }
+
+        // Initialize
+        showSequence();
+        // give kids time to view sequence, then show choices
+        setTimeout(()=> {
+          feedback.setAttribute('text', 'value: What's next? Look at a choice to select.; align:center; width:3');
+          showChoices();
+        }, 2200);
+
+      </script>
+    </a-scene>
+  </body>
+</html>
