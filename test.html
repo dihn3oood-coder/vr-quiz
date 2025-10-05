@@ -1,104 +1,13 @@
-<script>
-  const quiz = [
-    { q: "Which data type is 25?", options: ["Text","Number","Color"], answer: 1 },
-    { q: "Which data type is 'Blue'?", options: ["Text","Number","Color"], answer: 2 },
-    { q: "Which data type is 'Hello'?", options: ["Text","Number","Sound"], answer: 0 },
-    { q: "Which data type is 02:30 PM?", options: ["Date","Time","Number"], answer: 1 },
-    { q: "Which data type is 12/09/2025?", options: ["Date","Color","Sound"], answer: 0 }
-  ];
-
-  let current = 0;
-  let score = 0;
-  const boxes = ["option1","option2","option3"];
-  const texts = ["text1","text2","text3"];
-  const signEl = document.querySelector("#sign");
-
-  // Generate random position *around* the player
-  function randomPosition() {
-    const angle = Math.random() * 360; // random direction around the player
-    const distance = 2 + Math.random() * 2; // 2–4 meters away
-    const x = Math.cos(THREE.MathUtils.degToRad(angle)) * distance;
-    const z = Math.sin(THREE.MathUtils.degToRad(angle)) * distance;
-    const y = 1.5 + Math.random() * 1; // height
-    return { x, y, z };
-  }
-
-  function loadQuestion(index) {
-    const q = quiz[index];
-    const qPos = randomPosition();
-    document.querySelector("#question").setAttribute("text", "value", q.q);
-    document.querySelector("#question").setAttribute("position", qPos);
-
-    // Randomized horizontal layout for answers
-    const offsets = [-1.8, 0, 1.8].sort(() => Math.random() - 0.5);
-
-    boxes.forEach((id, i) => {
-      const pos = { x: qPos.x + offsets[i], y: qPos.y - 0.8, z: qPos.z };
-      const box = document.querySelector(`#${id}`);
-      const text = document.querySelector(`#${texts[i]}`);
-      box.setAttribute("position", pos);
-      text.setAttribute("position", { x: pos.x, y: pos.y, z: pos.z + 0.3 });
-      text.setAttribute("value", q.options[i]);
-      box.setAttribute("visible", "true");
-      text.setAttribute("visible", "true");
-    });
-
-    signEl.setAttribute("visible", "false");
-  }
-
-  AFRAME.registerComponent('gaze-listener', {
-    init: function() {
-      this.el.addEventListener('click', () => {
-        const idx = boxes.indexOf(this.el.id);
-        const boxPos = document.querySelector(`#${boxes[idx]}`).getAttribute("position");
-        const correctIdx = quiz[current].answer;
-
-        if (idx === correctIdx) {
-          score += 10;
-          document.querySelector('#correctSound').components.sound.playSound();
-          signEl.setAttribute("src", "#correctSign");
-        } else {
-          document.querySelector('#wrongSound').components.sound.playSound();
-          signEl.setAttribute("src", "#wrongSign");
-        }
-
-        signEl.setAttribute("position", { x: boxPos.x, y: boxPos.y + 0.7, z: boxPos.z });
-        signEl.setAttribute("visible", "true");
-        document.querySelector('#score').setAttribute("text", "value", `Score: ${score}`);
-
-        setTimeout(() => {
-          current++;
-          if (current < quiz.length) {
-            loadQuestion(current);
-          } else {
-            document.querySelector("#question").setAttribute("text", "value", "🎉 Quiz Finished!");
-            boxes.forEach(b => document.querySelector(`#${b}`).setAttribute("visible", "false"));
-            texts.forEach(t => document.querySelector(`#${t}`).setAttribute("visible", "false"));
-            signEl.setAttribute("visible", "false");
-            document.querySelector("#replay").setAttribute("visible", "true");
-            document.querySelector("#replayText").setAttribute("visible", "true");
-          }
-        }, 1000);
-      });
-    }
-  });
-
-  AFRAME.registerComponent('gaze-listener-replay', {
-    init: function() {
-      this.el.addEventListener('click', () => {
-        score = 0;
-        current = 0;
-        document.querySelector('#score').setAttribute("text", "value", "Score: 0");
-        document.querySelector("#replay").setAttribute("visible", "false");
-        document.querySelector("#replayText").setAttribute("visible", "false");
-        boxes.forEach(b => document.querySelector(`#${b}`).setAttribute("visible", "true"));
-        texts.forEach(t => document.querySelector(`#${t}`).setAttribute("visible", "true"));
-        loadQuestion(current);
-      });
-    }
-  });
-
-  boxes.forEach(id => document.querySelector(`#${id}`).setAttribute('gaze-listener', ''));
-  document.querySelector('#replay').setAttribute('gaze-listener-replay', '');
-  loadQuestion(current);
-</script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-box position="0 1.5 -3" color="red"></a-box>
+      <a-sky color="#88c"></a-sky>
+    </a-scene>
+  </body>
+</html>
