@@ -1,13 +1,168 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  </head>
-  <body>
-    <a-scene>
-      <a-box position="0 1.5 -3" color="red"></a-box>
-      <a-sky color="#88c"></a-sky>
-    </a-scene>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>VR Quiz Moving Questions</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <style>body { margin:0; overflow:hidden; }</style>
+</head>
+<body>
+  <a-scene>
+    <a-assets>
+      <!-- Background image -->
+      <img id="customBG" src="https://cdn.pixabay.com/photo/2024/01/17/19/29/ai-generated-8515503_1280.png" crossorigin="anonymous">
+
+      <!-- Correct / wrong signs -->
+      <img id="correctSign" src="https://cdn.pixabay.com/photo/2014/04/02/11/01/tick-305245_1280.png">
+      <img id="wrongSign" src="https://cdn.pixabay.com/photo/2012/04/13/00/22/red-31226_960_720.png">
+
+      <!-- Answer sounds -->
+      <audio id="correctAudio" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_2d9a1f43a0.mp3?filename=correct-2-6280.mp3" preload="auto"></audio>
+      <audio id="wrongAudio" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_5f93d2e7c5.mp3?filename=wrong-6281.mp3" preload="auto"></audio>
+    </a-assets>
+
+    <!-- Camera + cursor -->
+    <a-entity camera look-controls position="0 1.6 0">
+      <a-entity cursor="fuse:true; fuseTimeout:500"
+                raycaster="objects:.clickable"
+                position="0 0 -1"
+                geometry="primitive:ring; radiusInner:0.02; radiusOuter:0.03"
+                material="color: cyan; shader: flat"></a-entity>
+    </a-entity>
+
+    <!-- Background sky -->
+    <a-sky src="#customBG" color="#446"></a-sky>
+
+    <!-- Question -->
+    <a-entity id="question" position="0 2.5 -3"
+              text="value: Loading...; align:center; width:5; color:#FFF;"></a-entity>
+
+    <!-- Answer boxes + text -->
+    <a-box id="option1" class="clickable" depth="0.2" height="0.5" width="1.8" color="#FFC107"></a-box>
+    <a-text id="text1" value="" align="center" color="#000" width="2.5"></a-text>
+
+    <a-box id="option2" class="clickable" depth="0.2" height="0.5" width="1.8" color="#8BC34A"></a-box>
+    <a-text id="text2" value="" align="center" color="#000" width="2.5"></a-text>
+
+    <a-box id="option3" class="clickable" depth="0.2" height="0.5" width="1.8" color="#03A9F4"></a-box>
+    <a-text id="text3" value="" align="center" color="#000" width="2.5"></a-text>
+
+    <!-- True/False sign -->
+    <a-image id="sign" src="" scale="0.8 0.8 0.8" visible="false"></a-image>
+
+    <!-- Score -->
+    <a-entity id="score" position="0 3.5 -3" text="value: Score: 0; align:center; color:#FFF; width:4;"></a-entity>
+
+    <!-- Replay button -->
+    <a-box id="replay" class="clickable" position="2 3.5 -3" depth="0.2" height="0.5" width="2" color="#FF9800" visible="false"></a-box>
+    <a-text id="replayText" value="Replay Quiz" align="center" position="2 3.5 -2.7" color="#000" width="2.5" visible="false"></a-text>
+
+    <!-- Answer sounds -->
+    <a-entity id="correctSound" sound="src: #correctAudio"></a-entity>
+    <a-entity id="wrongSound" sound="src: #wrongAudio"></a-entity>
+
+    <script>
+      const quiz = [
+        { q: "Which data type is 25?", options: ["Text","Number","Color"], answer: 1 },
+        { q: "Which data type is 'Blue'?", options: ["Text","Number","Color"], answer: 2 },
+        { q: "Which data type is 'Hello'?", options: ["Text","Number","Sound"], answer: 0 },
+        { q: "Which data type is 02:30 PM?", options: ["Date","Time","Number"], answer: 1 },
+        { q: "Which data type is 12/09/2025?", options: ["Date","Color","Sound"], answer: 0 }
+      ];
+
+      let current = 0;
+      let score = 0;
+      const boxes = ["option1","option2","option3"];
+      const texts = ["text1","text2","text3"];
+      const signEl = document.querySelector("#sign");
+
+      // Random position always around player but visible
+      function randomPosition() {
+        const angle = Math.random() * 360;
+        const distance = 2 + Math.random() * 1.5; // 2–3.5 meters
+        const x = Math.cos(THREE.MathUtils.degToRad(angle)) * distance;
+        const z = Math.sin(THREE.MathUtils.degToRad(angle)) * distance;
+        const y = 1.5 + Math.random() * 1; // 1.5–2.5m height
+        return { x, y, z };
+      }
+
+      function loadQuestion(index) {
+        const q = quiz[index];
+        const qPos = randomPosition();
+        document.querySelector("#question").setAttribute("text", "value", q.q);
+        document.querySelector("#question").setAttribute("position", qPos);
+
+        const offsets = [-1.8, 0, 1.8].sort(() => Math.random() - 0.5);
+        boxes.forEach((id,i) => {
+          const pos = { x: qPos.x + offsets[i], y: qPos.y - 0.8, z: qPos.z };
+          const box = document.querySelector(`#${id}`);
+          const text = document.querySelector(`#${texts[i]}`);
+          box.setAttribute("position", pos);
+          text.setAttribute("position", {x: pos.x, y: pos.y, z: pos.z + 0.3});
+          text.setAttribute("value", q.options[i]);
+          box.setAttribute("visible", "true");
+          text.setAttribute("visible", "true");
+        });
+        signEl.setAttribute("visible", "false");
+      }
+
+      AFRAME.registerComponent('gaze-listener', {
+        init: function() {
+          this.el.addEventListener('click', () => {
+            const idx = boxes.indexOf(this.el.id);
+            const boxPos = document.querySelector(`#${boxes[idx]}`).getAttribute("position");
+            const correctIdx = quiz[current].answer;
+
+            if (idx === correctIdx) {
+              score += 10;
+              document.querySelector('#correctSound').components.sound.playSound();
+              signEl.setAttribute("src", "#correctSign");
+            } else {
+              document.querySelector('#wrongSound').components.sound.playSound();
+              signEl.setAttribute("src", "#wrongSign");
+            }
+
+            signEl.setAttribute("position", { x: boxPos.x, y: boxPos.y + 0.7, z: boxPos.z });
+            signEl.setAttribute("visible", "true");
+            document.querySelector('#score').setAttribute("text", "value", `Score: ${score}`);
+
+            setTimeout(() => {
+              current++;
+              if (current < quiz.length) {
+                loadQuestion(current);
+              } else {
+                document.querySelector("#question").setAttribute("text", "value", "🎉 Quiz Finished!");
+                boxes.forEach(b => document.querySelector(`#${b}`).setAttribute("visible", "false"));
+                texts.forEach(t => document.querySelector(`#${t}`).setAttribute("visible", "false"));
+                signEl.setAttribute("visible", "false");
+                document.querySelector("#replay").setAttribute("visible", "true");
+                document.querySelector("#replayText").setAttribute("visible", "true");
+              }
+            }, 1000);
+          });
+        }
+      });
+
+      AFRAME.registerComponent('gaze-listener-replay', {
+        init: function() {
+          this.el.addEventListener('click', () => {
+            score = 0;
+            current = 0;
+            document.querySelector('#score').setAttribute("text", "value", "Score: 0");
+            document.querySelector("#replay").setAttribute("visible", "false");
+            document.querySelector("#replayText").setAttribute("visible", "false");
+            boxes.forEach(b => document.querySelector(`#${b}`).setAttribute("visible", "true"));
+            texts.forEach(t => document.querySelector(`#${t}`).setAttribute("visible", "true"));
+            loadQuestion(current);
+          });
+        }
+      });
+
+      boxes.forEach(id => document.querySelector(`#${id}`).setAttribute('gaze-listener', ''));
+      document.querySelector('#replay').setAttribute('gaze-listener-replay', '');
+      loadQuestion(current);
+    </script>
+
+  </a-scene>
+</body>
 </html>
