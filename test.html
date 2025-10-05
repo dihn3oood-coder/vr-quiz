@@ -76,13 +76,13 @@
       const texts = ["text1","text2","text3"];
       const signEl = document.querySelector("#sign");
 
-      // Random position always around player but visible
+      // Random position always around player at comfortable reading distance
       function randomPosition() {
         const angle = Math.random() * 360;
-        const distance = 2 + Math.random() * 1.5; // 2–3.5 meters
+        const distance = 3 + Math.random() * 2; // 3–5 meters away
         const x = Math.cos(THREE.MathUtils.degToRad(angle)) * distance;
         const z = Math.sin(THREE.MathUtils.degToRad(angle)) * distance;
-        const y = 1.5 + Math.random() * 1; // 1.5–2.5m height
+        const y = 1.7 + Math.random() * 1; // 1.7–2.7 meters height
         return { x, y, z };
       }
 
@@ -103,6 +103,7 @@
           box.setAttribute("visible", "true");
           text.setAttribute("visible", "true");
         });
+
         signEl.setAttribute("visible", "false");
       }
 
